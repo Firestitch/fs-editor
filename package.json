@@ -1,10 +1,10 @@
 {
-  "name": "@firestitch/component-boilerplate",
-  "description": "@firestitch/component-boilerplate",
+  "name": "@firestitch/fs-editor",
+  "description": "@firestitch/fs-editor",
   "version": "0.1.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Firestitch/component-boilerplate"
+    "url": "https://github.com/Firestitch/fs-editor"
   },
   "author": {
     "name": "Firestitch",
@@ -15,7 +15,7 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Firestitch/component-boilerplate/issues"
+    "url": "https://github.com/Firestitch/fs-editor/issues"
   },
   "main": "package/index.js",
   "typings": "package/index.d.ts",
