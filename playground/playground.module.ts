@@ -21,7 +21,7 @@ const routes: Routes = [
   bootstrap: [ AppComponent ],
   imports: [
     BrowserModule,
-    FsEditorRichTextModule,
+    FsEditorRichTextModule.forRoot(),
     BrowserAnimationsModule,
     AppMaterialModule,
     FormsModule,
