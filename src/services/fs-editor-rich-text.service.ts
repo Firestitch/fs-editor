@@ -31,6 +31,8 @@ export class FsEditorRichTextService {
       Quill = require('quill');
     }
 
+    this.setupIcons();
+    
     this.editor = new Quill(this._targetElement.nativeElement, this._editorOptions);
 
     if (this._editorOptions.image && this._editorOptions.image.upload) {
@@ -68,5 +70,29 @@ export class FsEditorRichTextService {
     console.log('insert', this.editor);
     const range = this.editor.getSelection();
     this.editor.insertEmbed(range.index, 'image', url);
+  }
+
+  private setupIcons() {
+    const icons = Quill.import('ui/icons');
+
+    icons['bold'] = '<i class="material-icons">format_bold</i>';
+    icons['italic'] = '<i class="material-icons">format_italic</i>';
+    icons['underline'] = '<i class="material-icons">format_underlined</i>';
+    icons['strike'] = '<i class="material-icons">strikethrough_s</i>';
+    icons['color'] = '<i class="material-icons">format_color_text</i>';
+    icons['background'] = '<i class="material-icons">format_color_fill</i>';
+    icons['list']['ordered'] = '<i class="material-icons">format_list_numbered</i>';
+    icons['list']['bullet'] = '<i class="material-icons">list</i>';
+    icons['indent'] = '<i class="material-icons">format_indent_decrease</i>';
+    icons['video'] = '<i class="material-icons">local_movies</i>';
+    icons['align'][''] = '<i class="material-icons">format_align_left</i>';
+    icons['align']['center'] = '<i class="material-icons">format_align_center</i>';
+    icons['align']['justify'] = '<i class="material-icons">format_align_justify</i>';
+    icons['align']['right'] = '<i class="material-icons">format_align_right</i>';
+    icons['link'] = '<i class="material-icons">insert_link</i>';
+    icons['image'] = '<i class="material-icons">insert_photo</i>';
+    icons['blockquote'] = '<i class="material-icons">format_quote</i>';
+    icons['code-block'] = '<i class="material-icons">code</i>';
+    icons['blockquote'] = '<i class="material-icons">format_quote</i>';
   }
 }

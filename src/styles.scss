@@ -1,2 +1,9 @@
 @import "~quill/dist/quill.core.css";
 @import "~quill/dist/quill.snow.css";
+
+
+.ql-formats {
+  button {
+    padding: 0 !important;
+  }
+}
