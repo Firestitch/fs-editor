@@ -3,12 +3,20 @@
 
 
 .ql-formats {
-  button {
+  button, .ql-picker {
     padding: 0 !important;
 
     .material-icons {
       color: #444;
       transform: scale(.85);
+    }
+  }
+
+  .ql-color, .ql-background, .ql-align {
+    .ql-picker-label {
+      padding: 0;
+      outline: none;
+      border: none;
     }
   }
 }

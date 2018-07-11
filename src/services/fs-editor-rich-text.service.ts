@@ -32,7 +32,7 @@ export class FsEditorRichTextService {
     }
 
     this.setupIcons();
-    
+
     this.editor = new Quill(this._targetElement.nativeElement, this._editorOptions);
 
     if (this._editorOptions.image && this._editorOptions.image.upload) {
@@ -83,7 +83,8 @@ export class FsEditorRichTextService {
     icons['background'] = '<i class="material-icons">format_color_fill</i>';
     icons['list']['ordered'] = '<i class="material-icons">format_list_numbered</i>';
     icons['list']['bullet'] = '<i class="material-icons">list</i>';
-    icons['indent'] = '<i class="material-icons">format_indent_decrease</i>';
+    icons['indent']['+1'] = '<i class="material-icons">format_indent_increase</i>';
+    icons['indent']['-1'] = '<i class="material-icons">format_indent_decrease</i>';
     icons['video'] = '<i class="material-icons">local_movies</i>';
     icons['align'][''] = '<i class="material-icons">format_align_left</i>';
     icons['align']['center'] = '<i class="material-icons">format_align_center</i>';

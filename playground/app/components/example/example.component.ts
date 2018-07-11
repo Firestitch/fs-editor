@@ -9,10 +9,7 @@ import { FsEditorRichTextOptions } from '../../../../src/interfaces';
 export class ExampleComponent {
 
   public toolbarOptions = [
-    [
-      {'font': ['sans-serif']},
-      {'size': ['']},
-    ],
+    [{ header: [1, 2, 3, false] }],
     [
       'bold',
       'italic',
@@ -20,21 +17,21 @@ export class ExampleComponent {
       'strike',
     ],
     [
-      'color',
-      'background'
+      {color: []},
+      {background: []},
     ],
     [
       'blockquote',
       'code-block',
     ],
     [
-      {'list': 'ordered'},
-      {'list': 'bullet'},
-      {'indent': -1},
-      {'indent': +1},
+      { list: 'ordered' },
+      { list: 'bullet' },
+      { indent: '-1' },
+      { indent: '+1' },
     ],
     [
-      'align'
+      { align: [] }
     ],
     [
       'link',
