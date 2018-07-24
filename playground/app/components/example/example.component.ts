@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { FsEditorRichTextOptions } from '../../../../src/interfaces';
+import { Subject } from 'rxjs/Subject';
+import { map } from 'rxjs/operators';
 
 
 @Component({
@@ -8,51 +10,26 @@ import { FsEditorRichTextOptions } from '../../../../src/interfaces';
 })
 export class ExampleComponent {
 
-  public toolbarOptions = [
-    [{ header: [1, 2, 3, false] }],
-    [
-      'bold',
-      'italic',
-      'underline',
-      'strike',
-    ],
-    [
-      {color: []},
-      {background: []},
-    ],
-    [
-      'blockquote',
-      'code-block',
-    ],
-    [
-      { list: 'ordered' },
-      { list: 'bullet' },
-      { indent: '-1' },
-      { indent: '+1' },
-    ],
-    [
-      { align: [] }
-    ],
-    [
-      'link',
-      'image',
-      'video',
-    ]
-  ];
-
-
   public options: FsEditorRichTextOptions = {
-    modules: {
-      toolbar: this.toolbarOptions
-    },
     image: {
-      upload: (file, cb) => {
+      upload: (file) => {
+        const API = new Subject();
+
         setTimeout(() => {
-          cb('https://sun1-5.userapi.com/c543101/v543101664/4e104/qws0SPFDbLo.jpg');
+          API.next({
+            data: {
+              url: 'https://sun1-5.userapi.com/c543101/v543101664/4e104/qws0SPFDbLo.jpg'
+            }
+          });
         }, 1000);
+
+        return API.pipe(
+          map((response: any) => {
+            return response.data.url;
+          })
+        );
       }
     },
-    theme: 'snow'
   };
 
   public model = '';

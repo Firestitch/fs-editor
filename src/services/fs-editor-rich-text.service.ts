@@ -20,6 +20,22 @@ export class FsEditorRichTextService {
 
   public setOptions(options: FsEditorRichTextOptions = {}) {
     this._editorOptions = Object.assign(this._editorOptions, options);
+
+    // Default options
+    if (!this._editorOptions.modules
+      || (this._editorOptions.modules && !this._editorOptions.modules.toolbar)
+    ) {
+
+      if (!this._editorOptions.modules) {
+        this._editorOptions.modules = {};
+      }
+
+      this._editorOptions.modules.toolbar = DEFAULT_TOOLBAR_OPTIONS;
+    }
+
+    if (!this._editorOptions.theme) {
+      this._editorOptions.theme = 'snow';
+    }
   }
 
   public setTargetElement(el: ElementRef) {
@@ -56,8 +72,8 @@ export class FsEditorRichTextService {
 
       // file type is only image.
       if (/^image\//.test(file.type)) {
-        this._editorOptions.image.upload(file, (url: string) => {
-         this.insertToEditor(url);
+        this._editorOptions.image.upload(file).subscribe((url) => {
+          this.insertToEditor(url);
         });
         // saveToServer(file); // TODO callback t
       } else {
@@ -97,3 +113,35 @@ export class FsEditorRichTextService {
     icons['blockquote'] = '<i class="material-icons">format_quote</i>';
   }
 }
+
+const DEFAULT_TOOLBAR_OPTIONS = [
+  [{ header: [1, 2, 3, false] }],
+  [
+    'bold',
+    'italic',
+    'underline',
+    'strike',
+  ],
+  [
+    {color: []},
+    {background: []},
+  ],
+  [
+    'blockquote',
+    'code-block',
+  ],
+  [
+    { list: 'ordered' },
+    { list: 'bullet' },
+    { indent: '-1' },
+    { indent: '+1' },
+  ],
+  [
+    { align: [] }
+  ],
+  [
+    'link',
+    'image',
+    'video',
+  ]
+];

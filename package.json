@@ -1,6 +1,6 @@
 {
-  "name": "@firestitch/fs-editor",
-  "description": "@firestitch/fs-editor",
+  "name": "@firestitch/editor",
+  "description": "@firestitch/editor",
   "version": "0.1.0",
   "repository": {
     "type": "git",
