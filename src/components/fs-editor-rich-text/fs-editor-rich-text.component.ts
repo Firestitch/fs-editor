@@ -7,6 +7,7 @@ import {
   Renderer2,
   ElementRef,
   forwardRef,
+  OnChanges
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -18,7 +19,6 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   useExisting: forwardRef(() => FsEditorRichTextComponent),
   multi: true
 };
-
 
 @Component({
   selector: 'fs-editor-rich-text',
@@ -32,18 +32,17 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 export class FsEditorRichTextComponent implements OnInit, AfterViewInit, ControlValueAccessor {
 
   @Input() public options: FsEditorRichTextOptions = {};
+  @Input() public ngModel;
 
   @ViewChild('editor') public container;
 
-  public text = '';
   public disabled;
 
   constructor(
     private _el: ElementRef,
     private _renderer: Renderer2,
     private _richTextService: FsEditorRichTextService,
-  ) {
-  }
+  ) {}
 
   onChange = (data: any) => {};
   onTouched = () => {};
@@ -57,12 +56,14 @@ export class FsEditorRichTextComponent implements OnInit, AfterViewInit, Control
     // Init
     this._richTextService.setTargetElement(this.container);
     this._richTextService.initEditor();
+    this._richTextService.editor.setContents(this.ngModel);
     this.subscribe();
   }
 
   public writeValue(data: any): void {
-    this.text = data;
-    this.onChange(this.text);
+    if(this._richTextService.editor) {
+      this._richTextService.editor.setContents(data);
+    }
   }
 
   public registerOnChange(fn: (data: any) => void): void {
@@ -79,7 +80,7 @@ export class FsEditorRichTextComponent implements OnInit, AfterViewInit, Control
 
   public subscribe() {
     this._richTextService.editor.on('text-change', (delta, oldDelta, source) => {
-      this.writeValue(this._richTextService.editor.getContents());
+      this.onChange(this._richTextService.editor.getContents());
     });
   }
 }

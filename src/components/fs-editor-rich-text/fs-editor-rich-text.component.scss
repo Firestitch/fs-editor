@@ -1,0 +1,12 @@
+::ng-deep {
+
+  .ql-container,
+  .ql-toolbar.ql-snow {
+    font: inherit;
+  }
+
+  .ql-container.ql-snow,
+  .ql-toolbar.ql-snow {
+    border-color: #eaeaea;
+  }
+}

@@ -1,1 +1,9 @@
-<fs-editor-rich-text [options]="options" [(ngModel)]="test"></fs-editor-rich-text>
+<fs-editor-rich-text [options]="options" [(ngModel)]="model"></fs-editor-rich-text>
+
+<fieldset *ngIf="model">
+  <legend>Content</legend>
+  {{model|json}}
+</fieldset>
+
+<button mat-raised-button (click)="set()">Set Content</button>
+
