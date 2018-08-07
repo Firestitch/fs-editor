@@ -10,7 +10,7 @@ import { map } from 'rxjs/operators';
 })
 export class ExampleComponent {
   public model = { ops: [ { insert: 'Default' } ] };
-
+  public html = '';
   public options: FsEditorRichTextOptions = {
     image: {
       upload: (file) => {
@@ -31,11 +31,12 @@ export class ExampleComponent {
         );
       }
     },
+    change: (data) => {
+
+    }
   };
 
   public set() {
     this.model = { ops: [ { insert: 'Hello World!\n' } ] };
   }
-
-
 }

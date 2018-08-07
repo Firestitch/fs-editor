@@ -18,10 +18,7 @@ import './styles.scss';
   ],
   declarations: [
     FsEditorRichTextComponent,
-  ],
-  providers: [
-    // FsComponentService,
-  ],
+  ]
 })
 export class FsEditorRichTextModule {
   static forRoot(config: FsEditorRichTextOptions = {}): ModuleWithProviders {

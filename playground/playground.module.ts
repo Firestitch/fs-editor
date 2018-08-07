@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app/app.component';
 import { BrowserModule } from '@angular/platform-browser';
-import { FsEditorRichTextModule } from '../src';
+import { FsEditorRichTextModule, FsEditorRendererModule } from '../src';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppMaterialModule } from './app/material.module';
 import { FsExampleModule } from '@firestitch/example';
@@ -22,6 +22,7 @@ const routes: Routes = [
   imports: [
     BrowserModule,
     FsEditorRichTextModule.forRoot(),
+    FsEditorRendererModule.forRoot(),
     BrowserAnimationsModule,
     AppMaterialModule,
     FormsModule,

@@ -1,6 +1,11 @@
 <fs-editor-rich-text [options]="options" [(ngModel)]="model"></fs-editor-rich-text>
 
 <fieldset *ngIf="model">
+  <legend>HTML</legend>
+  <div fsEditorRenderer [ngModel]="model"></div>
+</fieldset>
+
+<fieldset *ngIf="model">
   <legend>Content</legend>
   {{model|json}}
 </fieldset>

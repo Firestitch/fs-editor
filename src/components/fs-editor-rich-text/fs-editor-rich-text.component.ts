@@ -6,13 +6,13 @@ import {
   ViewChild,
   Renderer2,
   ElementRef,
-  forwardRef,
-  OnChanges
+  forwardRef
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { FsEditorRichTextOptions } from '../../interfaces';
 import { FsEditorRichTextService } from '../../services/fs-editor-rich-text.service';
+
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -61,8 +61,9 @@ export class FsEditorRichTextComponent implements OnInit, AfterViewInit, Control
   }
 
   public writeValue(data: any): void {
-    if(this._richTextService.editor) {
+    if (this._richTextService.editor) {
       this._richTextService.editor.setContents(data);
+      this.change(data);
     }
   }
 
@@ -80,7 +81,15 @@ export class FsEditorRichTextComponent implements OnInit, AfterViewInit, Control
 
   public subscribe() {
     this._richTextService.editor.on('text-change', (delta, oldDelta, source) => {
-      this.onChange(this._richTextService.editor.getContents());
+      const data = this._richTextService.editor.getContents().ops;
+      this.onChange(data);
+      this.change(data);
     });
+  }
+
+  private change(data) {
+    if (this.options.change) {
+      this.options.change.apply(null, [data]);
+    }
   }
 }
