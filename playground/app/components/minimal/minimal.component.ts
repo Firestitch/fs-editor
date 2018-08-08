@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
-import { FsEditorRichTextOptions } from '../../../../src/interfaces';
+import { FsEditorRichTextOptions } from '../../../../src';
 import { Subject } from 'rxjs/Subject';
 import { map } from 'rxjs/operators';
 
 
 @Component({
-  selector: 'example',
-  templateUrl: 'example.component.html'
+  selector: 'minimal',
+  templateUrl: 'minimal.component.html'
 })
-export class ExampleComponent {
+export class MinimalComponent {
   public model = [ { insert: 'Default' } ];
   public html = '';
   public options: FsEditorRichTextOptions = {
@@ -31,10 +31,30 @@ export class ExampleComponent {
         );
       }
     },
-    change: (data) => {}
+    modules: {
+      toolbar: [
+          [{ header: [1, 2, 3, false] }],
+          [
+            'bold',
+            'italic',
+            'underline',
+            'strike',
+            'blockquote'
+          ],
+          [
+            { list: 'ordered' },
+            { list: 'bullet' },
+            { indent: '-1' },
+            { indent: '+1' },
+          ],
+          [
+            { align: [] }
+          ],
+          [
+            'link',
+            'image'
+          ]
+        ]
+    }
   };
-
-  public set() {
-    this.model = [ { insert: 'Hello World!\n' } ];
-  }
 }
