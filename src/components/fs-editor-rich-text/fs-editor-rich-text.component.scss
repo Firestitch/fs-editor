@@ -1,16 +1,19 @@
-::ng-deep {
+:host {
+  z-index: 100;
+  ::ng-deep {
 
-  .ql-container,
-  .ql-toolbar {
-    font: inherit !important;
-  }
+    .ql-container,
+    .ql-toolbar {
+      font: inherit !important;
+    }
 
-  .ql-container,
-  .ql-toolbar {
-    border-color: #eaeaea !important;
-  }
+    .ql-container,
+    .ql-toolbar {
+      border-color: #eaeaea !important;
+    }
 
-  .ql-editor blockquote {
-    border-width: 3px !important;
+    .ql-editor blockquote {
+      border-width: 3px !important;
+    }
   }
 }
