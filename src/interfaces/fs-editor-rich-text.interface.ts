@@ -1,4 +1,5 @@
 import { QuillOptionsStatic } from 'quill';
+import { Observable } from 'rxjs';
 
 
 export interface FsEditorRichTextOptions extends QuillOptionsStatic {
@@ -9,5 +10,5 @@ export interface FsEditorRichTextOptions extends QuillOptionsStatic {
 }
 
 export interface FsEditorImageUploadInterface {
-  upload?: Function;
+  upload?: (file: Blob) => Observable<string>;
 }

@@ -1,21 +1,33 @@
-import { ElementRef, Inject, Injectable } from '@angular/core';
+import { ElementRef, Inject, Injectable, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
 import * as _cloneDeep from 'lodash/cloneDeep';
 import { FsEditorRichTextOptions } from '../interfaces';
 import { FS_EDITOR_RICH_TEXT_CONFIG } from '../fs-editor-rich-text.providers';
+import { ClipboardPaste } from '../classes/clipboard-paste';
+import { takeUntil } from 'rxjs/operators';
 
 declare var require: any;
 var Quill: any = undefined;
 
 @Injectable()
-export class FsEditorRichTextService {
+export class FsEditorRichTextService implements OnDestroy {
 
   public editor: any;
 
   private _editorOptions: FsEditorRichTextOptions;
   private _targetElement: ElementRef;
+  private _clipboard: ClipboardPaste;
+  private _destroy$ = new Subject<void>();
+
 
   constructor(@Inject(FS_EDITOR_RICH_TEXT_CONFIG) private _defaultEditorOptions) {
     this._editorOptions = _cloneDeep(this._defaultEditorOptions);
+  }
+
+  public ngOnDestroy(): void {
+    this._clipboard.destroy();
+    this._destroy$.next();
+    this._destroy$.complete();
   }
 
   public setOptions(options: FsEditorRichTextOptions = {}) {
@@ -56,9 +68,23 @@ export class FsEditorRichTextService {
         this.selectImage();
       });
     }
+
+    this.initClipboard();
   }
 
-  public subscribe() {
+  public subscribe() {}
+
+  private initClipboard() {
+    this._clipboard = new ClipboardPaste(this._targetElement.nativeElement);
+    this._clipboard.subscribe();
+
+    this._clipboard.imagePasted$
+      .pipe(
+        takeUntil(this._destroy$),
+      )
+      .subscribe((file: Blob) => {
+        this.uploadToServer(file);
+      });
   }
 
   private selectImage() {
@@ -72,9 +98,7 @@ export class FsEditorRichTextService {
 
       // file type is only image.
       if (/^image\//.test(file.type)) {
-        this._editorOptions.image.upload(file).subscribe((url) => {
-          this.insertToEditor(url);
-        });
+        this.uploadToServer(file);
         // saveToServer(file); // TODO callback t
       } else {
         console.warn('You could only upload images.');
@@ -82,8 +106,16 @@ export class FsEditorRichTextService {
     };
   }
 
+  private uploadToServer(file) {
+    this._editorOptions.image.upload(file)
+      .pipe(
+        takeUntil(this._destroy$),
+      )
+      .subscribe((url) => {
+        this.insertToEditor(url);
+      });
+  }
   private insertToEditor(url) {
-    console.log('insert', this.editor);
     const range = this.editor.getSelection();
     this.editor.insertEmbed(range.index, 'image', url);
   }

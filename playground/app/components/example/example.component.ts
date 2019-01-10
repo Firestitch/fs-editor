@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { FsEditorRichTextOptions } from '../../../../src/interfaces';
 import { Subject } from 'rxjs/Subject';
 import { map } from 'rxjs/operators';
+import { HttpRequest } from '@angular/common/http';
+import { FsApi } from '@firestitch/api';
 
 
 @Component({
@@ -13,26 +15,21 @@ export class ExampleComponent {
   public html = '';
   public options: FsEditorRichTextOptions = {
     image: {
-      upload: (file) => {
-        const API = new Subject();
+      upload: (file: Blob) => {
+        const data = {
+          file: file
+        };
 
-        setTimeout(() => {
-          API.next({
-            data: {
-              url: 'https://sun1-5.userapi.com/c543101/v543101664/4e104/qws0SPFDbLo.jpg'
-            }
-          });
-        }, 1000);
-
-        return API.pipe(
-          map((response: any) => {
-            return response.data.url;
-          })
-        );
+        return this._fsApi.post('https://boilerplate.firestitch.com/api/dummy/upload', data)
+          .pipe(map((response) => response.data.url))
       }
     },
     change: (data) => {}
   };
+
+  constructor(private _fsApi: FsApi) {
+
+  }
 
   public set() {
     this.model = [ { insert: 'Hello World!\n' } ];

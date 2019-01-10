@@ -12,6 +12,7 @@ import { FsExampleModule } from '@firestitch/example';
 import {  ExampleComponent,
           ExamplesComponent,
           MinimalComponent } from './app/components';
+import { FsApiModule } from '@firestitch/api';
 
 
 const routes: Routes = [
@@ -29,6 +30,7 @@ const routes: Routes = [
     FormsModule,
     FsExampleModule,
     RouterModule.forRoot(routes),
+    FsApiModule.forRoot(),
   ],
   entryComponents: [
   ],
