@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FsEditorRichTextOptions } from '../../../../src';
+import { FsEditorRichTextOptions } from '@firestitch/editor';
 import { Subject } from 'rxjs/Subject';
 import { map } from 'rxjs/operators';
 

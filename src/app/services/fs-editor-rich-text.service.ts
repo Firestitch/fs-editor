@@ -1,10 +1,10 @@
 import { ElementRef, Inject, Injectable, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
-import * as _cloneDeep from 'lodash/cloneDeep';
-import { FsEditorRichTextOptions } from '../interfaces';
+import { takeUntil } from 'rxjs/operators';
+import cloneDeep from 'lodash/cloneDeep';
+import { FsEditorRichTextOptions } from '../interfaces/fs-editor-rich-text.interface';
 import { FS_EDITOR_RICH_TEXT_CONFIG } from '../fs-editor-rich-text.providers';
 import { ClipboardPaste } from '../classes/clipboard-paste';
-import { takeUntil } from 'rxjs/operators';
 
 declare var require: any;
 var Quill: any = undefined;
@@ -21,7 +21,7 @@ export class FsEditorRichTextService implements OnDestroy {
 
 
   constructor(@Inject(FS_EDITOR_RICH_TEXT_CONFIG) private _defaultEditorOptions) {
-    this._editorOptions = _cloneDeep(this._defaultEditorOptions);
+    this._editorOptions = cloneDeep(this._defaultEditorOptions);
   }
 
   public ngOnDestroy(): void {

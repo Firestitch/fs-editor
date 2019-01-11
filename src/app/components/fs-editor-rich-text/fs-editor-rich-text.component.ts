@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
-import { FsEditorRichTextOptions } from '../../interfaces';
+import { FsEditorRichTextOptions } from '../../interfaces/fs-editor-rich-text.interface';
 import { FsEditorRichTextService } from '../../services/fs-editor-rich-text.service';
 
 

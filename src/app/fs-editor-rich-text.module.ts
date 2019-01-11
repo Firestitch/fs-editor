@@ -1,10 +1,10 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FsEditorRichTextComponent } from './components/fs-editor-rich-text';
+import { FsEditorRichTextComponent } from './components/fs-editor-rich-text/fs-editor-rich-text.component';
 import { FS_EDITOR_RICH_TEXT_CONFIG } from './fs-editor-rich-text.providers';
-import { FsEditorRichTextOptions } from './interfaces';
+import { FsEditorRichTextOptions } from './interfaces/fs-editor-rich-text.interface';
 // import { FsComponentService } from './services';
-import './styles.scss';
+// import './styles.scss';
 
 
 @NgModule({
