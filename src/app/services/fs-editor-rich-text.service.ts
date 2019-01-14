@@ -1,10 +1,14 @@
 import { ElementRef, Inject, Injectable, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { delay, filter, share, takeUntil } from 'rxjs/operators';
 import cloneDeep from 'lodash/cloneDeep';
 import { FsEditorRichTextOptions } from '../interfaces/fs-editor-rich-text.interface';
 import { FS_EDITOR_RICH_TEXT_CONFIG } from '../fs-editor-rich-text.providers';
 import { ClipboardPaste } from '../classes/clipboard-paste';
+import { Test } from '../classes/test';
+import Parchment from 'parchment';
+import {ImageLoading} from '../classes/image-loading';
+
 
 declare var require: any;
 var Quill: any = undefined;
@@ -61,7 +65,17 @@ export class FsEditorRichTextService implements OnDestroy {
 
     this.setupIcons();
 
+    // Pfff
+    Quill.register(Test);
+    Quill.register(ImageLoading);
+    ///
+
     this.editor = new Quill(this._targetElement.nativeElement, this._editorOptions);
+
+    ////
+    // const toolbar = this.editor.getModule('toolbar');
+    // toolbar.attach(toolbar.container.querySelector('button.ql-videos'));
+    ///
 
     if (this._editorOptions.image && this._editorOptions.image.upload) {
       this.editor.getModule('toolbar').addHandler('image', () => {
@@ -70,6 +84,16 @@ export class FsEditorRichTextService implements OnDestroy {
     }
 
     this.initClipboard();
+
+    this.editor.getModule('toolbar').addHandler('videos', (e) => {
+      const range = this.editor.getSelection(true);
+      this.editor.insertText(range.index, '\n', Quill.sources.USER);
+      const d = this.editor.insertEmbed(range.index + 1, 'image-loader', '123', Quill.sources.USER);
+      this.editor.setSelection(range.index + 2, Quill.sources.SILENT);
+      // this.editor.updateContents(d.delete(d.length()))
+      // d.delete(d.length());
+      console.log('handle???', d, e);
+    });
   }
 
   public subscribe() {}
@@ -107,11 +131,23 @@ export class FsEditorRichTextService implements OnDestroy {
   }
 
   private uploadToServer(file) {
-    this._editorOptions.image.upload(file)
+    const upload = this._editorOptions.image.upload(file)
       .pipe(
+        share(),
         takeUntil(this._destroy$),
+      );
+
+    const range = this.editor.getSelection(true);
+    this.editor.insertText(range.index, '\n', Quill.sources.USER);
+    const d = this.editor.insertEmbed(range.index + 1, 'image-loader', upload, Quill.sources.USER);
+    this.editor.setSelection(range.index + 2, Quill.sources.SILENT);
+
+    upload
+      .pipe(
+        filter((response: any) => response.type === void 0),
       )
       .subscribe((url) => {
+
         this.insertToEditor(url);
       });
   }
@@ -175,5 +211,6 @@ const DEFAULT_TOOLBAR_OPTIONS = [
     'link',
     'image',
     'video',
+    'videos',
   ]
 ];

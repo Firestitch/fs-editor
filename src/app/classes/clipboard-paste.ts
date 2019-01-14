@@ -40,7 +40,7 @@ export class ClipboardPaste {
 
     for (let i = 0; i < itemsCount; i++) {
       if (items[i].type.indexOf('image') == -1) continue;
-      
+
       // Retrieve image on clipboard as blob
       const blob = items[i].getAsFile();
 

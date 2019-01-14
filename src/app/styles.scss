@@ -20,3 +20,18 @@
     }
   }
 }
+
+.ql-editor {
+  .uploading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+    border: 1px solid #000;
+
+    .progress {
+      font-size: 12px;
+    }
+  }
+}

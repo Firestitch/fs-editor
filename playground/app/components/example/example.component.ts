@@ -20,8 +20,15 @@ export class ExampleComponent {
           file: file
         };
 
-        return this._fsApi.post('https://boilerplate.firestitch.com/api/dummy/upload', data)
-          .pipe(map((response) => response.data.url))
+        return this._fsApi.post(
+          'https://boilerplate.firestitch.com/api/dummy/upload',
+          data,
+          { reportProgress: true }
+        )
+          .pipe(map((response) => {
+            console.log(response);
+            return response.type !== void 0 ? response : response.data.url;
+          }))
       }
     },
     change: (data) => {}
