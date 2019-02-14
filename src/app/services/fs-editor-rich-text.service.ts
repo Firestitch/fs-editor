@@ -1,7 +1,7 @@
 import { ElementRef, Inject, Injectable, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import cloneDeep from 'lodash/cloneDeep';
+import { cloneDeep } from 'lodash-es';
 import { FsEditorRichTextOptions } from '../interfaces/fs-editor-rich-text.interface';
 import { FS_EDITOR_RICH_TEXT_CONFIG } from '../fs-editor-rich-text.providers';
 import { ClipboardPaste } from '../classes/clipboard-paste';

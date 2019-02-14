@@ -3,14 +3,17 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 import { BrowserModule } from '@angular/platform-browser';
-import { FsEditorRichTextModule, FsEditorRendererModule } from '@firestitch/editor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AppMaterialModule } from './material.module';
 import { FsExampleModule } from '@firestitch/example';
-import {  ExampleComponent,
-          ExamplesComponent,
-          MinimalComponent } from './components';
+
+import { FsEditorRendererModule, FsEditorRichTextModule } from '@firestitch/editor';
 import { FsApiModule } from '@firestitch/api';
+import { FsMessageModule } from '@firestitch/message';
+
+import { ToastrModule } from 'ngx-toastr';
+
+import { ExampleComponent, ExamplesComponent, MinimalComponent } from './components';
+import { AppMaterialModule } from './material.module';
 
 
 const routes: Routes = [
@@ -18,7 +21,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  bootstrap: [ AppComponent ],
+  bootstrap: [AppComponent],
   imports: [
     BrowserModule,
     FsEditorRichTextModule.forRoot(),
@@ -26,20 +29,20 @@ const routes: Routes = [
     BrowserAnimationsModule,
     AppMaterialModule,
     FormsModule,
-    FsExampleModule,
+    FsExampleModule.forRoot(),
+    FsMessageModule.forRoot(),
+    ToastrModule.forRoot({ preventDuplicates: true }),
     RouterModule.forRoot(routes),
     FsApiModule.forRoot(),
   ],
-  entryComponents: [
-  ],
+  entryComponents: [],
   declarations: [
     AppComponent,
     ExamplesComponent,
     ExampleComponent,
     MinimalComponent
   ],
-  providers: [
-  ],
+  providers: [],
 })
 export class PlaygroundModule {
 }
