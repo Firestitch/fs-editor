@@ -53,6 +53,10 @@ export class FsEditorRichTextService implements OnDestroy {
 
   public setTargetElement(el: ElementRef) {
     this._targetElement = el;
+
+    // For correct position tooltip and other popup elements from editor
+    this._editorOptions.bounds = this._targetElement.nativeElement;
+    this._editorOptions.scrollingContainer = this._targetElement.nativeElement;
   }
 
   public initEditor() {
