@@ -5,6 +5,7 @@ import { cloneDeep } from 'lodash-es';
 import { FsEditorRichTextOptions } from '../interfaces/fs-editor-rich-text.interface';
 import { FS_EDITOR_RICH_TEXT_CONFIG } from '../fs-editor-rich-text.providers';
 import { ClipboardPaste } from '../classes/clipboard-paste';
+import { DEFAULT_TOOLBAR_CONFIG } from '../consts/default-toolbar-config';
 
 declare var require: any;
 var Quill: any = undefined;
@@ -42,7 +43,7 @@ export class FsEditorRichTextService implements OnDestroy {
         this._editorOptions.modules = {};
       }
 
-      this._editorOptions.modules.toolbar = DEFAULT_TOOLBAR_OPTIONS;
+      this._editorOptions.modules.toolbar = DEFAULT_TOOLBAR_CONFIG;
     }
 
     if (!this._editorOptions.theme) {
@@ -145,35 +146,3 @@ export class FsEditorRichTextService implements OnDestroy {
     icons['blockquote'] = '<i class="material-icons">format_quote</i>';
   }
 }
-
-const DEFAULT_TOOLBAR_OPTIONS = [
-  [{ header: [1, 2, 3, false] }],
-  [
-    'bold',
-    'italic',
-    'underline',
-    'strike',
-  ],
-  [
-    {color: []},
-    {background: []},
-  ],
-  [
-    'blockquote',
-    'code-block',
-  ],
-  [
-    { list: 'ordered' },
-    { list: 'bullet' },
-    { indent: '-1' },
-    { indent: '+1' },
-  ],
-  [
-    { align: [] }
-  ],
-  [
-    'link',
-    'image',
-    'video',
-  ]
-];

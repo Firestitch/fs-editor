@@ -13,3 +13,5 @@ export {
   FsEditorRichTextOptions,
 } from './app/interfaces/fs-editor-rich-text.interface';
 
+export { DEFAULT_TOOLBAR_CONFIG } from './app/consts/default-toolbar-config';
+
