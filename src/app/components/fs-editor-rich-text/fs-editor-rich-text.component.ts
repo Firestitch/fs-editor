@@ -6,19 +6,17 @@ import {
   ViewChild,
   Renderer2,
   ElementRef,
-  forwardRef
+  forwardRef,
+  OnDestroy,
+  HostBinding
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { FsEditorRichTextOptions } from '../../interfaces/fs-editor-rich-text.interface';
 import { FsEditorRichTextService } from '../../services/fs-editor-rich-text.service';
+import { Subject } from 'rxjs';
+import { debounce, debounceTime, first } from 'rxjs/operators';
 
-
-export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
-  provide: NG_VALUE_ACCESSOR,
-  useExisting: forwardRef(() => FsEditorRichTextComponent),
-  multi: true
-};
 
 @Component({
   selector: 'fs-editor-rich-text',
@@ -26,17 +24,26 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   styleUrls: [ 'fs-editor-rich-text.component.scss' ],
   providers: [
     FsEditorRichTextService,
-    CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => FsEditorRichTextComponent),
+      multi: true
+    }
   ]
 })
-export class FsEditorRichTextComponent implements OnInit, AfterViewInit, ControlValueAccessor {
+export class FsEditorRichTextComponent implements OnInit, AfterViewInit, ControlValueAccessor, OnDestroy {
 
   @Input() public options: FsEditorRichTextOptions = {};
   @Input() public ngModel;
 
   @ViewChild('editor') public container;
 
+  @HostBinding('class.focused') classFocused = false;
+
   public disabled;
+
+  private _destroy$ = new Subject();
+  private _focus$ = new Subject();
 
   constructor(
     private _el: ElementRef,
@@ -63,7 +70,6 @@ export class FsEditorRichTextComponent implements OnInit, AfterViewInit, Control
   public writeValue(data: any): void {
     if (this._richTextService.editor) {
       this._richTextService.editor.setContents(data);
-      this.change(data);
     }
   }
 
@@ -85,11 +91,40 @@ export class FsEditorRichTextComponent implements OnInit, AfterViewInit, Control
       this.onChange(data);
       this.change(data);
     });
+
+    this._richTextService.editor.root.addEventListener('blur', this.blur);
+    this._richTextService.editor.root.addEventListener('focus', this.focus);
+
+
+    this._focus$
+    .pipe(
+      debounceTime(100)
+    )
+    .subscribe((value: boolean) => {
+      this.classFocused = value;
+    });
+  }
+
+  private blur = () => {
+    this._focus$.next(false);
+  }
+
+  private focus = () => {
+    this._focus$.next(true);
   }
 
   private change(data) {
     if (this.options.change) {
       this.options.change.apply(null, [data]);
     }
+  }
+
+  ngOnDestroy() {
+
+    this._richTextService.editor.root.removeEventListener('blur', this.blur);
+    this._richTextService.editor.root.removeEventListener('focus', this.focus);
+
+    this._destroy$.next();
+    this._destroy$.complete();
   }
 }

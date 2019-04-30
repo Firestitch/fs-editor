@@ -1,6 +1,8 @@
 @import '../tools/assets/playground.scss';
 @import '../src/app/styles.scss';
 
+@include fs-editor($mat-blue);
+
 fs-example {
   min-height: 300px;
 }
