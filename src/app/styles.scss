@@ -31,14 +31,19 @@
   font: inherit;
 }
 
-.ql-editor blockquote {
-  border-width: 3px;
-}
-
 .ql-editor {
   padding: 8px 0;
-}
 
+  blockquote {
+    border-width: 3px;
+  }
+
+  &.ql-blank::before {
+    left: 0;
+    color: rgba(0, 0, 0, 0.54);
+    font-style: normal;
+  }
+}
 
 .bottom-line {
   opacity: 0;

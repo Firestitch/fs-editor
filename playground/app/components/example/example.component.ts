@@ -22,6 +22,7 @@ export class ExampleComponent {
           .pipe(map((response) => response.data.url))
       }
     },
+    placeholder: 'Placeholder Text...',
     change: (data) => {}
   };
 
