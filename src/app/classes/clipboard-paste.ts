@@ -6,12 +6,20 @@ export class ClipboardPaste {
 
   private _processPastedContentCallback = this.processPastedContent.bind(this);
   private _imagePasted$ = new Subject<Blob>();
+  private _textPasted$ = new Subject<string>();
   private _destroy$ = new Subject<void>();
 
   constructor(private _targetContainer: any) {}
 
   get imagePasted$(): Observable<Blob> {
     return this._imagePasted$
+      .pipe(
+        takeUntil(this._destroy$)
+      );
+  }
+
+  get textPasted$(): Observable<string> {
+    return this._textPasted$
       .pipe(
         takeUntil(this._destroy$)
       );
@@ -32,21 +40,34 @@ export class ClipboardPaste {
   }
 
   private processPastedContent(e: ClipboardEvent) {
-    e.preventDefault();
-    e.stopPropagation();
+
+    // default text's copy/paste works without preventDefault & stopPropagation
+    e.preventDefault(); // problem
+    e.stopPropagation(); // problem
 
     const items = e.clipboardData.items;
-    const itemsCount = items.length;
+
+    let itemsCount = items.length;
 
     for (let i = 0; i < itemsCount; i++) {
-      if (items[i].type.indexOf('image') == -1) continue;
-      
-      // Retrieve image on clipboard as blob
-      const blob = items[i].getAsFile();
+      if (items[i].type.indexOf('text/html') !== -1) {
+        items[i].getAsString((text: string) => {
+          if (text) {
+            this._textPasted$.next(text);
+          }
+        });
 
-      if (blob) {
-        this._imagePasted$.next(blob);
       }
+
+      if (items[i].type.indexOf('image') !== -1) {
+        // Retrieve image on clipboard as blob
+        const blob = items[i].getAsFile();
+
+        if (blob) {
+          this._imagePasted$.next(blob);
+        }
+      }
+
     }
   }
 }
