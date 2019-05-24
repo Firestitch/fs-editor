@@ -90,14 +90,6 @@ export class FsEditorRichTextService implements OnDestroy {
       .subscribe((file: Blob) => {
         this.uploadToServer(file);
       });
-
-    this._clipboard.textPasted$
-      .pipe(
-        takeUntil(this._destroy$),
-      )
-      .subscribe((text: string) => {
-        this.insertToEditor(text);
-      });
   }
 
   private selectImage() {
@@ -130,13 +122,9 @@ export class FsEditorRichTextService implements OnDestroy {
   }
 
   private insertImageToEditor(url) {
-    const range = this.editor.getSelection();
-    this.editor.insertEmbed(range.index, 'image', url);
-  }
-
-  private insertToEditor(text: string) {
-    const range = this.editor.getSelection(); // problem
-    this.editor.insertText(range.index, text);
+    // const range = this.editor.getSelection();
+    const index = (this.editor.getSelection() || {}).index || this.editor.getLength();
+    this.editor.insertEmbed(index, 'image', url);
   }
 
   private setupIcons() {
