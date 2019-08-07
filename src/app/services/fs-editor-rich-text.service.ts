@@ -1,11 +1,12 @@
 import { ElementRef, Inject, Injectable, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep, remove } from 'lodash-es';
 import { FsEditorRichTextOptions } from '../interfaces/fs-editor-rich-text.interface';
 import { FS_EDITOR_RICH_TEXT_CONFIG } from '../fs-editor-rich-text.providers';
 import { ClipboardPaste } from '../classes/clipboard-paste';
 import { DEFAULT_TOOLBAR_CONFIG } from '../consts/default-toolbar-config';
+import { FsPrompt } from '@firestitch/prompt';
 
 declare var require: any;
 var Quill: any = undefined;
@@ -21,7 +22,8 @@ export class FsEditorRichTextService implements OnDestroy {
   private _destroy$ = new Subject<void>();
 
 
-  constructor(@Inject(FS_EDITOR_RICH_TEXT_CONFIG) private _defaultEditorOptions) {
+  constructor(@Inject(FS_EDITOR_RICH_TEXT_CONFIG) private _defaultEditorOptions,
+              private _prompt: FsPrompt) {
     this._editorOptions = cloneDeep(this._defaultEditorOptions);
   }
 
@@ -35,15 +37,16 @@ export class FsEditorRichTextService implements OnDestroy {
     this._editorOptions = Object.assign(this._editorOptions, options);
 
     // Default options
-    if (!this._editorOptions.modules
-      || (this._editorOptions.modules && !this._editorOptions.modules.toolbar)
-    ) {
+    if (!this._editorOptions.modules) {
+      this._editorOptions.modules = {};
+    }
 
-      if (!this._editorOptions.modules) {
-        this._editorOptions.modules = {};
-      }
-
+    if (!this._editorOptions.modules.toolbar) {
       this._editorOptions.modules.toolbar = DEFAULT_TOOLBAR_CONFIG;
+    }
+
+    if (!this._editorOptions.modules.toolbar.handlers) {
+      this._editorOptions.modules.toolbar.handlers = {};
     }
 
     if (!this._editorOptions.theme) {
@@ -66,6 +69,21 @@ export class FsEditorRichTextService implements OnDestroy {
 
     this.setupIcons();
 
+    if (!this._editorOptions.image) {
+      this._editorOptions.modules.toolbar = this._editorOptions.modules.toolbar.filter(item => {
+        if (item !== 'image') {
+
+          remove(item, (i) => {
+            return i === 'image';
+          });
+
+          if (item.length) {
+            return true;
+          }
+        }
+      });
+    }
+
     this.editor = new Quill(this._targetElement.nativeElement, this._editorOptions);
 
     if (this._editorOptions.image && this._editorOptions.image.upload) {
@@ -73,6 +91,35 @@ export class FsEditorRichTextService implements OnDestroy {
         this.selectImage();
       });
     }
+
+    this.editor.getModule('toolbar').addHandler('link', (value) => {
+
+      const selection = this.editor.getSelection() || {};
+
+      if (!selection.length) {
+        return;
+      }
+
+      const text = this.editor.getText(selection.index, selection.length);
+
+      this._prompt.input({
+        label: 'Please enter a URL',
+        title: 'Link',
+        commitLabel: 'Save',
+        required: true
+      })
+      .subscribe((url: string) => {
+
+        if (url) {
+          if (!url.match(/^http/)) {
+            url = 'http://'.concat(url);
+          }
+
+          this.editor.deleteText(selection.index, selection.length);
+          this.editor.insertText(selection.index, text, 'link', url);
+        }
+      });
+    });
 
     this.initClipboard();
   }
@@ -104,9 +151,6 @@ export class FsEditorRichTextService implements OnDestroy {
       // file type is only image.
       if (/^image\//.test(file.type)) {
         this.uploadToServer(file);
-        // saveToServer(file); // TODO callback t
-      } else {
-        console.warn('You could only upload images.');
       }
     };
   }

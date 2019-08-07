@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FsEditorRichTextComponent } from './components/fs-editor-rich-text/fs-editor-rich-text.component';
 import { FS_EDITOR_RICH_TEXT_CONFIG } from './fs-editor-rich-text.providers';
 import { FsEditorRichTextOptions } from './interfaces/fs-editor-rich-text.interface';
-// import { FsComponentService } from './services';
-// import './styles.scss';
+import { FsPromptModule } from '@firestitch/prompt';
 
 
 @NgModule({
   imports: [
     CommonModule,
+    FsPromptModule
   ],
   exports: [
     FsEditorRichTextComponent,
