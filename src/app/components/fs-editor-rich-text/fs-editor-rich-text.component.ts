@@ -68,7 +68,6 @@ export class FsEditorRichTextComponent implements OnInit, AfterViewInit, Control
   }
 
   public writeValue(data: any): void {
-    console.log(data);
     if (this._richTextService.editor) {
       this._richTextService.editor.setContents(data);
     }
