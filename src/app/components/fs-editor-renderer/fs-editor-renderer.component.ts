@@ -1,7 +1,4 @@
-import {
-  Component,
-  forwardRef
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html/dist/commonjs/QuillDeltaToHtmlConverter';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -19,13 +16,17 @@ export const FS_EDITOR_RENDERER_CONTROL_VALUE_ACCESSOR: any = {
   styleUrls: [ 'fs-editor-renderer.component.scss' ],
   providers: [
     FS_EDITOR_RENDERER_CONTROL_VALUE_ACCESSOR
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FsEditorRendererComponent implements ControlValueAccessor {
 
   public html: SafeHtml;
 
-  constructor(private sanitized: DomSanitizer) {}
+  constructor(
+    private sanitized: DomSanitizer,
+    private cdRef: ChangeDetectorRef,
+  ) {}
 
   onChange = (data: any) => {};
   onTouched = () => {};
@@ -57,6 +58,8 @@ export class FsEditorRendererComponent implements ControlValueAccessor {
 
     const converter = new QuillDeltaToHtmlConverter(data || {}, config);
     this.html = this.sanitized.bypassSecurityTrustHtml(converter.convert());
+
+    this.cdRef.markForCheck();
   }
 
   public registerOnChange(fn: (data: any) => void): void {

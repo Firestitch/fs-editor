@@ -1,21 +1,23 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
-  Input,
-  OnInit,
-  ViewChild,
-  Renderer2,
   ElementRef,
   forwardRef,
+  HostBinding,
+  Input,
   OnDestroy,
-  HostBinding
+  OnInit,
+  Renderer2,
+  ViewChild
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+
 import { FsEditorRichTextOptions } from '../../interfaces/fs-editor-rich-text.interface';
 import { FsEditorRichTextService } from '../../services/fs-editor-rich-text.service';
-import { Subject } from 'rxjs';
-import { debounce, debounceTime, first } from 'rxjs/operators';
 
 
 @Component({
@@ -29,7 +31,8 @@ import { debounce, debounceTime, first } from 'rxjs/operators';
       useExisting: forwardRef(() => FsEditorRichTextComponent),
       multi: true
     }
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FsEditorRichTextComponent implements OnInit, AfterViewInit, ControlValueAccessor, OnDestroy {
 
