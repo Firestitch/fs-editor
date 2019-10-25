@@ -29,7 +29,10 @@ export class FsEditorRichTextService implements OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this._clipboard.destroy();
+    if (this._clipboard) {
+      this._clipboard.destroy();
+    }
+
     this._destroy$.next();
     this._destroy$.complete();
   }
@@ -125,7 +128,7 @@ export class FsEditorRichTextService implements OnDestroy {
       });
     });
 
-    this.initClipboard();
+    this._initClipboard();
     this.initialized = true;
   }
 
@@ -134,7 +137,7 @@ export class FsEditorRichTextService implements OnDestroy {
     this.initialized = false;
   }
 
-  private initClipboard() {
+  private _initClipboard() {
     this._clipboard = new ClipboardPaste(this._targetElement.nativeElement);
     this._clipboard.subscribe();
 
