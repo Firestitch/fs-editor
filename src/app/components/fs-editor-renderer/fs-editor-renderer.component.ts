@@ -1,36 +1,30 @@
 import {
   Component,
-  forwardRef
+  Input,
+  OnInit
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html/dist/commonjs/QuillDeltaToHtmlConverter';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-
-export const FS_EDITOR_RENDERER_CONTROL_VALUE_ACCESSOR: any = {
-  provide: NG_VALUE_ACCESSOR,
-  useExisting: forwardRef(() => FsEditorRendererComponent),
-  multi: true
-};
 
 
 @Component({
   selector: '[fsEditorRenderer]',
   templateUrl: 'fs-editor-renderer.component.html',
-  styleUrls: [ 'fs-editor-renderer.component.scss' ],
-  providers: [
-    FS_EDITOR_RENDERER_CONTROL_VALUE_ACCESSOR
-  ]
+  styleUrls: [ 'fs-editor-renderer.component.scss' ]
 })
-export class FsEditorRendererComponent implements ControlValueAccessor {
+export class FsEditorRendererComponent implements OnInit {
 
   public html: SafeHtml;
 
+  private _content;
+
   constructor(private sanitized: DomSanitizer) {}
 
-  onChange = (data: any) => {};
-  onTouched = () => {};
+  public ngOnInit() {
+    this.content = this._content;
+  }
 
-  public writeValue(data: any): void {
+  @Input('content') set content(data) {
 
     const config = {
       inlineStyles: {
@@ -57,13 +51,6 @@ export class FsEditorRendererComponent implements ControlValueAccessor {
 
     const converter = new QuillDeltaToHtmlConverter(data || {}, config);
     this.html = this.sanitized.bypassSecurityTrustHtml(converter.convert());
-  }
-
-  public registerOnChange(fn: (data: any) => void): void {
-    this.onChange = fn;
-  }
-
-  public registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
+    this._content = data;
   }
 }

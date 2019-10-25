@@ -6,7 +6,9 @@ export interface FsEditorRichTextOptions extends QuillOptionsStatic {
   image?: FsEditorImageUploadInterface;
   modules?,
   theme?,
-  change?: Function
+  change?: Function,
+  initOnClick?: boolean,
+  placeholder?: string
 }
 
 export interface FsEditorImageUploadInterface {

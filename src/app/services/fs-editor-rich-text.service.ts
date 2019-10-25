@@ -7,6 +7,7 @@ import { FS_EDITOR_RICH_TEXT_CONFIG } from '../fs-editor-rich-text.providers';
 import { ClipboardPaste } from '../classes/clipboard-paste';
 import { DEFAULT_TOOLBAR_CONFIG } from '../consts/default-toolbar-config';
 import { FsPrompt } from '@firestitch/prompt';
+import { Quill as quill } from 'quill';
 
 declare var require: any;
 var Quill: any = undefined;
@@ -14,13 +15,13 @@ var Quill: any = undefined;
 @Injectable()
 export class FsEditorRichTextService implements OnDestroy {
 
-  public editor: any;
+  public editor: quill;
+  public initialized = false;
 
   private _editorOptions: FsEditorRichTextOptions;
   private _targetElement: ElementRef;
   private _clipboard: ClipboardPaste;
   private _destroy$ = new Subject<void>();
-
 
   constructor(@Inject(FS_EDITOR_RICH_TEXT_CONFIG) private _defaultEditorOptions,
               private _prompt: FsPrompt) {
@@ -67,7 +68,7 @@ export class FsEditorRichTextService implements OnDestroy {
       Quill = require('quill');
     }
 
-    this.setupIcons();
+    this._setupIcons();
 
     if (!this._editorOptions.image) {
       this._editorOptions.modules.toolbar = this._editorOptions.modules.toolbar.filter(item => {
@@ -88,13 +89,13 @@ export class FsEditorRichTextService implements OnDestroy {
 
     if (this._editorOptions.image && this._editorOptions.image.upload) {
       this.editor.getModule('toolbar').addHandler('image', () => {
-        this.selectImage();
+        this._selectImage();
       });
     }
 
     this.editor.getModule('toolbar').addHandler('link', (value) => {
 
-      const selection = this.editor.getSelection() || {};
+      const selection = this.editor.getSelection();
 
       if (!selection.length) {
         return;
@@ -108,6 +109,9 @@ export class FsEditorRichTextService implements OnDestroy {
         commitLabel: 'Save',
         required: true
       })
+      .pipe(
+        takeUntil(this._destroy$)
+      )
       .subscribe((url: string) => {
 
         if (url) {
@@ -122,9 +126,13 @@ export class FsEditorRichTextService implements OnDestroy {
     });
 
     this.initClipboard();
+    this.initialized = true;
   }
 
-  public subscribe() {}
+  public destroy() {
+    this.editor = null;
+    this.initialized = false;
+  }
 
   private initClipboard() {
     this._clipboard = new ClipboardPaste(this._targetElement.nativeElement);
@@ -135,11 +143,11 @@ export class FsEditorRichTextService implements OnDestroy {
         takeUntil(this._destroy$),
       )
       .subscribe((file: Blob) => {
-        this.uploadToServer(file);
+        this._uploadToServer(file);
       });
   }
 
-  private selectImage() {
+  private _selectImage() {
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
     input.click();
@@ -150,28 +158,31 @@ export class FsEditorRichTextService implements OnDestroy {
 
       // file type is only image.
       if (/^image\//.test(file.type)) {
-        this.uploadToServer(file);
+        this._uploadToServer(file);
       }
     };
   }
 
-  private uploadToServer(file) {
+  private _uploadToServer(file) {
     this._editorOptions.image.upload(file)
       .pipe(
         takeUntil(this._destroy$),
       )
       .subscribe((url) => {
-        this.insertImageToEditor(url);
+        this._insertImageToEditor(url);
       });
   }
 
-  private insertImageToEditor(url) {
-    // const range = this.editor.getSelection();
-    const index = (this.editor.getSelection() || {}).index || this.editor.getLength();
+  private _insertImageToEditor(url) {
+    let index = this.editor.getLength();
+    if (this.editor.getSelection()) {
+      index = this.editor.getSelection().index;
+    }
+
     this.editor.insertEmbed(index, 'image', url);
   }
 
-  private setupIcons() {
+  private _setupIcons() {
     const icons = Quill.import('ui/icons');
 
     icons['bold'] = '<i class="material-icons">format_bold</i>';

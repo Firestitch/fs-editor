@@ -8,14 +8,16 @@ import {
   ElementRef,
   forwardRef,
   OnDestroy,
-  HostBinding
+  HostBinding,
+  Output,
+  EventEmitter
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { FsEditorRichTextOptions } from '../../interfaces/fs-editor-rich-text.interface';
 import { FsEditorRichTextService } from '../../services/fs-editor-rich-text.service';
 import { Subject } from 'rxjs';
-import { debounce, debounceTime, first } from 'rxjs/operators';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -31,23 +33,25 @@ import { debounce, debounceTime, first } from 'rxjs/operators';
     }
   ]
 })
-export class FsEditorRichTextComponent implements OnInit, AfterViewInit, ControlValueAccessor, OnDestroy {
+export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, OnDestroy {
 
   @Input() public options: FsEditorRichTextOptions = {};
   @Input() public ngModel;
+
+  @Output() public initialized = new EventEmitter();
+  @Output() public destroyed = new EventEmitter();
 
   @ViewChild('editor') public container;
 
   @HostBinding('class.focused') classFocused = false;
 
   public disabled;
+  public initializing;
 
   private _destroy$ = new Subject();
   private _focus$ = new Subject();
 
   constructor(
-    private _el: ElementRef,
-    private _renderer: Renderer2,
     private _richTextService: FsEditorRichTextService,
   ) {}
 
@@ -55,16 +59,28 @@ export class FsEditorRichTextComponent implements OnInit, AfterViewInit, Control
   onTouched = () => {};
 
   public ngOnInit() {
-    // Setup
     this._richTextService.setOptions(this.options);
+
+    if (!this.options.initOnClick) {
+      this.initalize();
+    }
   }
 
-  public ngAfterViewInit() {
-    // Init
-    this._richTextService.setTargetElement(this.container);
-    this._richTextService.initEditor();
-    this._richTextService.editor.setContents(this.ngModel);
-    this.subscribe();
+  public initalize() {
+
+    if (this._richTextService.initialized) {
+      return;
+    }
+
+    this.initializing = true;
+    setTimeout(() => {
+      this._richTextService.setTargetElement(this.container);
+      this._richTextService.initEditor();
+      this._richTextService.editor.setContents(this.ngModel);
+      this.subscribe();
+      this._richTextService.editor.focus();
+      this.initialized.emit();
+    });
   }
 
   public writeValue(data: any): void {
@@ -81,50 +97,61 @@ export class FsEditorRichTextComponent implements OnInit, AfterViewInit, Control
     this.onTouched = fn;
   }
 
-  public setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
+  public disable(disable = true): void {
+    this.disabled = disable;
   }
 
   public subscribe() {
-    this._richTextService.editor.on('text-change', (delta, oldDelta, source) => {
-      const data = this._richTextService.editor.getContents().ops;
-      this.onChange(data);
-      this.change(data);
-    });
-
+    this._richTextService.editor.on('text-change', this._textChange);
     this._richTextService.editor.root.addEventListener('blur', this.blur);
     this._richTextService.editor.root.addEventListener('focus', this.focus);
 
-
     this._focus$
     .pipe(
-      debounceTime(100)
+      debounceTime(100),
+      takeUntil(this._destroy$)
     )
     .subscribe((value: boolean) => {
       this.classFocused = value;
     });
   }
 
-  private blur = () => {
+  public blur = () => {
     this._focus$.next(false);
   }
 
-  private focus = () => {
+  public focus = () => {
     this._focus$.next(true);
   }
 
-  private change(data) {
-    if (this.options.change) {
-      this.options.change.apply(null, [data]);
-    }
-  }
-
-  ngOnDestroy() {
-
-    this._richTextService.editor.root.removeEventListener('blur', this.blur);
-    this._richTextService.editor.root.removeEventListener('focus', this.focus);
-
+  public ngOnDestroy() {
     this._destroy$.next();
     this._destroy$.complete();
+    this.destroy();
+  }
+
+  public destroy() {
+    this.initializing = false;
+    if (this._richTextService.editor) {
+      this._richTextService.editor.off('text-change', this._textChange);
+      this._richTextService.editor.root.removeEventListener('blur', this.blur);
+      this._richTextService.editor.root.removeEventListener('focus', this.focus);
+    }
+
+    this._richTextService.destroy();
+    this.destroyed.emit();
+  }
+
+  private _textChange = (delta, oldDelta, source) => {
+    let contents = this._richTextService.editor.getContents().ops;
+
+    if (contents.length === 1 && contents[0].insert === '\n') {
+      contents = [];
+    }
+
+    this.onChange(contents);
+    if (this.options.change) {
+      this.options.change.apply(null, [contents]);
+    }
   }
 }

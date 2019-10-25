@@ -9,3 +9,44 @@
     }
   }
 }
+
+.editor-container.fade-in {
+  animation: fadein 1s;
+}
+
+.click-panel {
+  cursor: pointer;
+  position: relative;
+  margin: -1px 0 0 -1px;
+
+  &:hover:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: -4px;
+    bottom: -4px;
+    left: -4px;
+    right: -4px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+
+  .edit {
+    position: absolute;
+    right: 0px;
+    top: -2px;
+  }
+
+  .click-panel-container {
+    border: 1px solid transparent;
+
+    .placeholder {
+      color: rgba(0,0,0,.54);
+    }
+  }
+}
+
+@keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

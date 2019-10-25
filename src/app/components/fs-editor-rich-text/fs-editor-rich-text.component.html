@@ -1,2 +1,16 @@
-<div class="editor-container" #editor></div>
-<div class="bottom-line"></div>
+<div *ngIf="(initialized | async) || initializing; else clickInit">
+  <div class="editor-container" [ngClass]="{ 'fade-in': options.initOnClick }">
+    <div class="editor" #editor></div>
+    <div class="bottom-line"></div>
+  </div>
+</div>
+
+<ng-template #clickInit>
+  <div (click)="initalize()" class="click-panel" *ngIf="options.initOnClick">
+    <mat-icon class="edit">edit</mat-icon>
+    <div class="click-panel-container">
+      <span fsEditorRenderer [content]="ngModel" *ngIf="ngModel && ngModel.length; else placeholder"></span>
+      <ng-template #placeholder><span class="placeholder">{{options.placeholder}}</span></ng-template>
+    </div>
+  </div>
+</ng-template>
