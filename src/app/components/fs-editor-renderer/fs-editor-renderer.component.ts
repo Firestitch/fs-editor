@@ -24,7 +24,11 @@ export class FsEditorRendererComponent implements OnInit {
     this.content = this._content;
   }
 
+  @Input() format: 'html' | 'text' = 'html'
+
   @Input('content') set content(data) {
+
+    this._content = data;
 
     const config = {
       inlineStyles: {
@@ -49,8 +53,15 @@ export class FsEditorRendererComponent implements OnInit {
       }
     };
 
-    const converter = new QuillDeltaToHtmlConverter(data || {}, config);
-    this.html = this.sanitized.bypassSecurityTrustHtml(converter.convert());
-    this._content = data;
+    const converter = new QuillDeltaToHtmlConverter(this._content || {}, config);
+
+    if (this.format === 'html') {
+      this.html = this.sanitized.bypassSecurityTrustHtml(converter.convert());
+
+    } else if (this.format === 'text') {
+      const div = document.createElement('div');
+      div.innerHTML = converter.convert();
+      this.html = div.textContent || div.innerText || '';
+    }
   }
 }

@@ -1,14 +1,21 @@
 <fs-editor-rich-text [options]="options" [(ngModel)]="model"></fs-editor-rich-text>
 
-<fieldset *ngIf="model">
-  <legend>HTML</legend>
-  <div fsEditorRenderer [content]="model"></div>
-</fieldset>
+<ng-container *ngIf="model">
+  <fieldset>
+    <legend>HTML</legend>
+    <div fsEditorRenderer [content]="model"></div>
+  </fieldset>
 
-<fieldset *ngIf="model">
-  <legend>Content</legend>
-  {{model|json}}
-</fieldset>
+  <fieldset>
+    <legend>Text</legend>
+    <div fsEditorRenderer [content]="model" format="text"></div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Quill Object</legend>
+    {{model|json}}
+  </fieldset>
+</ng-container>
 
 <button mat-raised-button (click)="set()">Set Content</button>
 
