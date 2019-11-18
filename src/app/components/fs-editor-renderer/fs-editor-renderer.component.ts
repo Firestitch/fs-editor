@@ -1,10 +1,11 @@
 import {
   Component,
   Input,
-  OnInit
+  OnInit,
+  ElementRef
 } from '@angular/core';
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html/dist/commonjs/QuillDeltaToHtmlConverter';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { SafeHtml } from '@angular/platform-browser';
 
 
 @Component({
@@ -14,11 +15,9 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 })
 export class FsEditorRendererComponent implements OnInit {
 
-  public html: SafeHtml;
-
   private _content;
 
-  constructor(private sanitized: DomSanitizer) {}
+  constructor(private el: ElementRef) {}
 
   public ngOnInit() {
     this.content = this._content;
@@ -56,12 +55,12 @@ export class FsEditorRendererComponent implements OnInit {
     const converter = new QuillDeltaToHtmlConverter(this._content || {}, config);
 
     if (this.format === 'html') {
-      this.html = this.sanitized.bypassSecurityTrustHtml(converter.convert());
+      this.el.nativeElement.innerHTML = converter.convert();
 
     } else if (this.format === 'text') {
       const div = document.createElement('div');
       div.innerHTML = converter.convert();
-      this.html = div.textContent || div.innerText || '';
+      this.el.nativeElement.innerHTML = div.textContent || div.innerText || '';
     }
   }
 }
