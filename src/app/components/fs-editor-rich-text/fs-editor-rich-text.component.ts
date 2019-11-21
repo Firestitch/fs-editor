@@ -62,11 +62,11 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
     this._richTextService.setOptions(this.options);
 
     if (!this.options.initOnClick) {
-      this.initalize();
+      this.initialize();
     }
   }
 
-  public initalize() {
+  public initialize() {
 
     if (this._richTextService.initialized) {
       return;
@@ -81,6 +81,12 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
       this._richTextService.editor.focus();
       this.initialized.emit();
     });
+  }
+
+  public initializeEmpty() {
+    if (!this.ngModel || !this.ngModel.length) {
+      this.initialize();
+    }
   }
 
   public writeValue(data: any): void {

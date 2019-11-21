@@ -44,7 +44,7 @@ export class InitOnClickComponent {
   };
 
   public initialize() {
-    this.editor.initalize();
+    this.editor.initialize();
   }
 
   public destroy() {

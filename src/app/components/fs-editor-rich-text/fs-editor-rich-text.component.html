@@ -6,8 +6,11 @@
 </div>
 
 <ng-template #clickInit>
-  <div (click)="initalize()" class="click-panel" *ngIf="options.initOnClick">
-    <mat-icon class="edit">edit</mat-icon>
+  <div (click)="initializeEmpty()" class="click-panel" [ngClass]="{ 'has-content': ngModel && ngModel.length }" *ngIf="options.initOnClick">
+    <div class="edit">
+      <button mat-icon-button class="edit-placeholder" (click)="initialize()"><mat-icon>edit</mat-icon></button>
+      <button mat-mini-fab class="edit-initialize" (click)="initialize()"><mat-icon>edit</mat-icon></button>
+    </div>
     <div class="click-panel-container">
       <span fsEditorRenderer [content]="ngModel" *ngIf="ngModel && ngModel.length; else placeholder"></span>
       <ng-template #placeholder><span class="placeholder">{{options.placeholder}}</span></ng-template>

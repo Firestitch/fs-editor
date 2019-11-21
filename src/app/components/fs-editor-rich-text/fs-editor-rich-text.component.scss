@@ -15,33 +15,60 @@
 }
 
 .click-panel {
-  cursor: pointer;
+
   position: relative;
   margin: -1px 0 0 -1px;
 
-  &:hover:after {
-    content: '';
-    display: block;
-    position: absolute;
-    top: -4px;
-    bottom: -4px;
-    left: -4px;
-    right: -4px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+
+  &:not(.has-content) {
+    cursor: pointer;
+    .edit {
+      display: none;
+    }
   }
 
   .edit {
     position: absolute;
     right: 0px;
-    top: -2px;
+    top: -10px;
+    z-index: 1;
+
+    .edit-placeholder {
+      color: #ccc;
+    }
+
+    .edit-initialize {
+      display: none;
+    }
   }
 
   .click-panel-container {
-    border: 1px solid transparent;
 
     .placeholder {
       color: rgba(0,0,0,.54);
+    }
+  }
+
+  &:hover {
+
+    &:after {
+      content: '';
+      display: block;
+      position: absolute;
+      top: -4px;
+      bottom: -4px;
+      left: -4px;
+      right: -4px;
+    }
+
+    .edit {
+      .edit-placeholder {
+        display: none;
+      }
+
+      .edit-initialize {
+        display: block;
+      }
     }
   }
 }

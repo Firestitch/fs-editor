@@ -5,7 +5,7 @@ import { FS_EDITOR_RICH_TEXT_CONFIG } from './fs-editor-rich-text.providers';
 import { FsEditorRichTextOptions } from './interfaces/fs-editor-rich-text.interface';
 import { FsPromptModule } from '@firestitch/prompt';
 import { FsEditorRendererModule } from './fs-editor-renderer.module';
-import { MatIconModule } from '@angular/material';
+import { MatIconModule, MatButtonModule } from '@angular/material';
 
 
 @NgModule({
@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material';
     CommonModule,
     FsPromptModule,
     MatIconModule,
+    MatButtonModule,
     FsEditorRendererModule
   ],
   exports: [
