@@ -14,6 +14,7 @@ import { ToastrModule } from 'ngx-toastr';
 
 import { ExampleComponent, ExamplesComponent, MinimalComponent } from './components';
 import { AppMaterialModule } from './material.module';
+import { InitOnClickComponent } from './components/init-on-click';
 
 
 const routes: Routes = [
@@ -40,7 +41,8 @@ const routes: Routes = [
     AppComponent,
     ExamplesComponent,
     ExampleComponent,
-    MinimalComponent
+    MinimalComponent,
+    InitOnClickComponent
   ],
   providers: [],
 })

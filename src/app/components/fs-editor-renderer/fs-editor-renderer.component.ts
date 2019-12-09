@@ -1,37 +1,27 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  Component,
+  Input,
+  OnInit,
+  ElementRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html/dist/commonjs/QuillDeltaToHtmlConverter';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-
-export const FS_EDITOR_RENDERER_CONTROL_VALUE_ACCESSOR: any = {
-  provide: NG_VALUE_ACCESSOR,
-  useExisting: forwardRef(() => FsEditorRendererComponent),
-  multi: true
-};
 
 
 @Component({
   selector: '[fsEditorRenderer]',
   templateUrl: 'fs-editor-renderer.component.html',
   styleUrls: [ 'fs-editor-renderer.component.scss' ],
-  providers: [
-    FS_EDITOR_RENDERER_CONTROL_VALUE_ACCESSOR
-  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FsEditorRendererComponent implements ControlValueAccessor {
+export class FsEditorRendererComponent implements OnInit {
 
-  public html: SafeHtml;
+  @Input() format: 'html' | 'text' = 'html';
 
-  constructor(
-    private sanitized: DomSanitizer,
-    private cdRef: ChangeDetectorRef,
-  ) {}
+  @Input('content')
+  set content(data) {
 
-  onChange = (data: any) => {};
-  onTouched = () => {};
-
-  public writeValue(data: any): void {
+    this._content = data;
 
     const config = {
       inlineStyles: {
@@ -48,25 +38,31 @@ export class FsEditorRendererComponent implements ControlValueAccessor {
         },
         direction: (value, op) => {
           if (value === 'rtl') {
-              return 'direction:rtl' + ( op.attributes.align ? '' : '; text-align: inherit' );
+            return 'direction:rtl' + (op.attributes.align ? '' : '; text-align: inherit');
           } else {
-              return '';
+            return '';
           }
         }
       }
     };
 
-    const converter = new QuillDeltaToHtmlConverter(data || {}, config);
-    this.html = this.sanitized.bypassSecurityTrustHtml(converter.convert());
+    const converter = new QuillDeltaToHtmlConverter(this._content || {}, config);
 
-    this.cdRef.markForCheck();
+    if (this.format === 'html') {
+      this.el.nativeElement.innerHTML = converter.convert();
+
+    } else if (this.format === 'text') {
+      const div = document.createElement('div');
+      div.innerHTML = converter.convert();
+      this.el.nativeElement.innerHTML = div.textContent || div.innerText || '';
+    }
   }
 
-  public registerOnChange(fn: (data: any) => void): void {
-    this.onChange = fn;
-  }
+  private _content;
 
-  public registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
+  constructor(private el: ElementRef) {}
+
+  public ngOnInit() {
+    this.content = this._content;
   }
 }

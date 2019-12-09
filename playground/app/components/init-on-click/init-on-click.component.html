@@ -1,0 +1,13 @@
+<fs-editor-rich-text [options]="options" [(ngModel)]="model" #editor></fs-editor-rich-text>
+
+<fieldset *ngIf="model">
+  <legend>HTML</legend>
+  <div fsEditorRenderer [content]="model"></div>
+</fieldset>
+
+<fieldset>
+  <legend>Content</legend>
+  <button mat-raised-button (click)="destroy()">Destroy Editor</button>
+  <button mat-raised-button (click)="initialize()">Initialize Editor</button>
+</fieldset>
+

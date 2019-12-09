@@ -9,3 +9,71 @@
     }
   }
 }
+
+.editor-container.fade-in {
+  animation: fadein 1s;
+}
+
+.click-panel {
+
+  position: relative;
+  margin: -1px 0 0 -1px;
+
+
+  &:not(.has-content) {
+    cursor: pointer;
+    .edit {
+      display: none;
+    }
+  }
+
+  .edit {
+    position: absolute;
+    right: 0px;
+    top: -10px;
+    z-index: 1;
+
+    .edit-placeholder {
+      color: #ccc;
+    }
+
+    .edit-initialize {
+      display: none;
+    }
+  }
+
+  .click-panel-container {
+
+    .placeholder {
+      color: rgba(0,0,0,.54);
+    }
+  }
+
+  &:hover {
+
+    &:after {
+      content: '';
+      display: block;
+      position: absolute;
+      top: -4px;
+      bottom: -4px;
+      left: -4px;
+      right: -4px;
+    }
+
+    .edit {
+      .edit-placeholder {
+        display: none;
+      }
+
+      .edit-initialize {
+        display: block;
+      }
+    }
+  }
+}
+
+@keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
