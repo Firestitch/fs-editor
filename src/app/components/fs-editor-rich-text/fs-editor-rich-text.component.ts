@@ -8,9 +8,17 @@ import {
   Output,
   EventEmitter,
   ViewChild,
-  OnInit, ChangeDetectorRef,
+  OnInit,
+  ChangeDetectorRef,
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ValidationErrors,
+  Validator
+} from '@angular/forms';
 
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
@@ -29,14 +37,23 @@ import { FsEditorRichTextService } from '../../services/fs-editor-rich-text.serv
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => FsEditorRichTextComponent),
       multi: true
-    }
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => FsEditorRichTextComponent),
+      multi: true
+    },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, OnDestroy {
+export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
 
   @Input() public options: FsEditorRichTextOptions = {};
   @Input() public ngModel;
+
+  @Input() maxLength?: number;
+  @Input() minLength?: number;
+  @Input() required = false;
 
   @Output() public initialized = new EventEmitter();
   @Output() public destroyed = new EventEmitter();
@@ -68,6 +85,56 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
     }
   }
 
+  public validate(control: AbstractControl): ValidationErrors | null {
+    if (!this._richTextService.editor) {
+      return null
+    }
+
+    const err: {
+      minLengthError?: {
+        given: number
+        minLength: number
+      }
+      maxLengthError?: {
+        given: number
+        maxLength: number
+      }
+      requiredError?: { empty: boolean }
+    } = {};
+
+    let valid = true;
+
+    const textLength = this._richTextService.editor.getText().trim().length;
+
+    if (this.minLength && textLength && textLength < this.minLength) {
+      err.minLengthError = {
+        given: textLength,
+        minLength: this.minLength
+      };
+
+      valid = false
+    }
+
+    if (this.maxLength && textLength > this.maxLength) {
+      err.maxLengthError = {
+        given: textLength,
+        maxLength: this.maxLength
+      };
+
+      valid = false
+    }
+
+    if (this.required !== undefined && !textLength) {
+      err.requiredError = {
+        empty: true
+      };
+
+      valid = false
+    }
+
+    return valid ? null : err
+  }
+
   public initialize() {
     if (this._richTextService.initialized) {
       return;
@@ -80,6 +147,7 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
       this._richTextService.setTargetElement(this.container);
       this._richTextService.initEditor();
       this._richTextService.editor.setContents(this.ngModel);
+      this.onChange(this.ngModel);
       this.subscribe();
       this._richTextService.editor.focus();
       this.initialized.emit();
