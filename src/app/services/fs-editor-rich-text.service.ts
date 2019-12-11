@@ -90,6 +90,8 @@ export class FsEditorRichTextService implements OnDestroy {
 
     this.editor = new Quill(this._targetElement.nativeElement, this._editorOptions);
 
+    this._appendBottomLine();
+
     if (this._editorOptions.image && this._editorOptions.image.upload) {
       this.editor.getModule('toolbar').addHandler('image', () => {
         this._selectImage();
@@ -183,6 +185,12 @@ export class FsEditorRichTextService implements OnDestroy {
     }
 
     this.editor.insertEmbed(index, 'image', url);
+  }
+
+  private _appendBottomLine() {
+    const newNode = document.createElement('div');
+    newNode.className = 'bottom-line';
+    (this.editor as any).container.appendChild(newNode);
   }
 
   private _setupIcons() {

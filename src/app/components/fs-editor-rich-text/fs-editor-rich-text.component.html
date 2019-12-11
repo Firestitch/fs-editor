@@ -1,8 +1,14 @@
 <div *ngIf="(initialized | async) || initializing; else clickInit">
-  <div class="editor-container" [ngClass]="{ 'fade-in': options.initOnClick }">
-    <div class="editor" #editor></div>
-    <div class="bottom-line"></div>
-  </div>
+  <fs-label-field>
+    <fs-label *ngIf="label" class="fs-form-label">{{ label }}</fs-label>
+
+    <div class="editor-container" [ngClass]="{ 'fade-in': options.initOnClick }">
+      <div class="editor" #editor></div>
+    </div>
+
+    <fs-label-message class="fs-form-message">
+    </fs-label-message>
+  </fs-label-field>
 </div>
 
 <ng-template #clickInit>

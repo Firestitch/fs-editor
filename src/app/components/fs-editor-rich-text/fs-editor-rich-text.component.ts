@@ -51,9 +51,11 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
   @Input() public options: FsEditorRichTextOptions = {};
   @Input() public ngModel;
 
-  @Input() maxLength?: number;
-  @Input() minLength?: number;
-  @Input() required = false;
+  @Input()
+  public required = false;
+
+  @Input()
+  public label;
 
   @Output() public initialized = new EventEmitter();
   @Output() public destroyed = new EventEmitter();
@@ -99,35 +101,15 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
         given: number
         maxLength: number
       }
-      requiredError?: { empty: boolean }
+      requiredError?: string
     } = {};
 
     let valid = true;
 
     const textLength = this._richTextService.editor.getText().trim().length;
 
-    if (this.minLength && textLength && textLength < this.minLength) {
-      err.minLengthError = {
-        given: textLength,
-        minLength: this.minLength
-      };
-
-      valid = false
-    }
-
-    if (this.maxLength && textLength > this.maxLength) {
-      err.maxLengthError = {
-        given: textLength,
-        maxLength: this.maxLength
-      };
-
-      valid = false
-    }
-
     if (this.required !== undefined && !textLength) {
-      err.requiredError = {
-        empty: true
-      };
+      err.requiredError = 'This field is required';
 
       valid = false
     }
@@ -147,7 +129,6 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
       this._richTextService.setTargetElement(this.container);
       this._richTextService.initEditor();
       this._richTextService.editor.setContents(this.ngModel);
-      this.onChange(this.ngModel);
       this.subscribe();
       this._richTextService.editor.focus();
       this.initialized.emit();

@@ -1,12 +1,14 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
+import { FsPromptModule } from '@firestitch/prompt';
+import { FsLabelModule } from '@firestitch/label';
+import { MatIconModule, MatButtonModule } from '@angular/material';
+
+import { FsEditorRendererModule } from './fs-editor-renderer.module';
 import { FsEditorRichTextComponent } from './components/fs-editor-rich-text/fs-editor-rich-text.component';
 import { FS_EDITOR_RICH_TEXT_CONFIG } from './fs-editor-rich-text.providers';
 import { FsEditorRichTextOptions } from './interfaces/fs-editor-rich-text.interface';
-import { FsPromptModule } from '@firestitch/prompt';
-import { FsEditorRendererModule } from './fs-editor-renderer.module';
-import { MatIconModule, MatButtonModule } from '@angular/material';
-
 
 @NgModule({
   imports: [
@@ -14,7 +16,8 @@ import { MatIconModule, MatButtonModule } from '@angular/material';
     FsPromptModule,
     MatIconModule,
     MatButtonModule,
-    FsEditorRendererModule
+    FsEditorRendererModule,
+    FsLabelModule,
   ],
   exports: [
     FsEditorRichTextComponent
