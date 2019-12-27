@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 
 import { FsPromptModule } from '@firestitch/prompt';
 import { FsLabelModule } from '@firestitch/label';
-import { MatIconModule, MatButtonModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 import { FsEditorRendererModule } from './fs-editor-renderer.module';
 import { FsEditorRichTextComponent } from './components/fs-editor-rich-text/fs-editor-rich-text.component';

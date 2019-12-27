@@ -10,7 +10,7 @@ import { map } from 'rxjs/operators';
 })
 export class InitOnClickComponent {
 
-  @ViewChild('editor') editor: FsEditorRichTextComponent;
+  @ViewChild('editor', { static: false }) editor: FsEditorRichTextComponent;
 
   public model = [];
   public options: FsEditorRichTextOptions = {

@@ -60,7 +60,7 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
   @Output() public initialized = new EventEmitter();
   @Output() public destroyed = new EventEmitter();
 
-  @ViewChild('editor')
+  @ViewChild('editor', { static: false })
   public container;
 
   @HostBinding('class.focused') classFocused = false;
