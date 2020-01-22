@@ -22,6 +22,7 @@ import {
 
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
+import { isArray } from 'lodash-es';
 
 import { FsEditorRichTextOptions } from '../../interfaces/fs-editor-rich-text.interface';
 import { FsEditorRichTextService } from '../../services/fs-editor-rich-text.service';
@@ -67,6 +68,7 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
 
   public disabled;
   public initializing;
+  public length = 0;
 
   private _destroy$ = new Subject();
   private _focus$ = new Subject();
@@ -88,33 +90,27 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
   }
 
   public validate(control: AbstractControl): ValidationErrors | null {
+
     if (!this._richTextService.editor) {
       return null
     }
 
-    const err: {
-      minLengthError?: {
-        given: number
-        minLength: number
-      }
-      maxLengthError?: {
-        given: number
-        maxLength: number
-      }
-      requiredError?: string
-    } = {};
-
-    let valid = true;
-
+    const err: any = {};
     const textLength = this._richTextService.editor.getText().trim().length;
 
     if (this.required !== undefined && !textLength) {
       err.requiredError = 'This field is required';
-
-      valid = false
     }
 
-    return valid ? null : err
+    if (this.options.maxLength && isArray(this.ngModel)) {
+      const length = JSON.stringify(this.ngModel).length;
+      const maxLength = this.options.maxLength;
+      if (length > maxLength) {
+        err.maxLengthError = `Must be ${maxLength} characters or fewer. You entered ${length} characters.`;
+      }
+    }
+
+    return Object.keys(err).length ? err : null;
   }
 
   public initialize() {
@@ -192,6 +188,7 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
 
   public destroy() {
     this.initializing = false;
+
     if (this._richTextService.editor) {
       this._richTextService.editor.off('text-change', this._textChange);
       this._richTextService.editor.root.removeEventListener('blur', this.blur);
@@ -200,21 +197,23 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
 
     this._richTextService.destroy();
     this.destroyed.emit();
-
     this._cdRef.markForCheck();
   }
 
   private _textChange = (delta, oldDelta, source) => {
+
     let contents = this._richTextService.editor.getContents().ops;
 
     if (contents.length === 1 && contents[0].insert === '\n') {
       contents = [];
     }
 
+    this.ngModel = contents;
     this.onChange(contents);
     if (this.options.change) {
       this.options.change.apply(null, [contents]);
     }
+
     this._cdRef.markForCheck();
   }
 }

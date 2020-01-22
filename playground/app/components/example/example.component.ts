@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FsEditorRichTextOptions } from '@firestitch/editor';
 import { map } from 'rxjs/operators';
 import { FsApi } from '@firestitch/api';
+import { FsMessage } from '@firestitch/message';
 
 
 @Component({
@@ -22,12 +23,16 @@ export class ExampleComponent {
           .pipe(map((response) => response.data.url))
       }
     },
+    maxLength: 100,
     placeholder: 'Placeholder Text...',
     change: (data) => {}
   };
 
-  constructor(private _fsApi: FsApi) {
+  constructor(private _fsApi: FsApi,
+              private _message: FsMessage) {}
 
+  public save = () => {
+    this._message.success('Saved Changes');
   }
 
   public set() {

@@ -1,5 +1,7 @@
 @import '../tools/assets/playground.scss';
 @import '../src/app/styles.scss';
+@import '~@firestitch/form/styles.scss';
+@import '~@firestitch/message/styles.scss';
 
 @include fs-editor($mat-blue);
 

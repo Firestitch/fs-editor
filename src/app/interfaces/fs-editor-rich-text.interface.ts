@@ -8,7 +8,8 @@ export interface FsEditorRichTextOptions extends QuillOptionsStatic {
   theme?,
   change?: Function,
   initOnClick?: boolean,
-  placeholder?: string
+  placeholder?: string,
+  maxLength?: number
 }
 
 export interface FsEditorImageUploadInterface {

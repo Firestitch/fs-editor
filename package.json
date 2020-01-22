@@ -2,7 +2,7 @@
   "name": "@firestitch/editor",
   "title": "Rich Text Editor",
   "description": "@firestitch/editor",
-  "version": "8.0.1",
+  "version": "8.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/Firestitch/ngx-editor"
@@ -50,7 +50,7 @@
     "@firestitch/common": "^7.0.5",
     "@firestitch/drawer": "^8.0.2",
     "@firestitch/example": "^8.0.0",
-    "@firestitch/form": "^8.0.5",
+    "@firestitch/form": "^8.3.1",
     "@firestitch/iframe": "^8.0.0",
     "@firestitch/label": "^7.1.9",
     "@firestitch/menu": "^7.0.11",

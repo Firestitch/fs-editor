@@ -1,21 +1,28 @@
-<fs-editor-rich-text [options]="options" [(ngModel)]="model" name="editor"></fs-editor-rich-text>
+<form fsForm [submit]="save">
+  <fs-editor-rich-text
+    [options]="options"
+    [(ngModel)]="model"
+    required
+    name="editor">
+  </fs-editor-rich-text>
 
-<ng-container *ngIf="model">
-  <fieldset>
-    <legend>HTML</legend>
-    <div fsEditorRenderer [content]="model"></div>
-  </fieldset>
+  <ng-container *ngIf="model">
+    <fieldset>
+      <legend>HTML</legend>
+      <div fsEditorRenderer [content]="model"></div>
+    </fieldset>
 
-  <fieldset>
-    <legend>Text</legend>
-    <div fsEditorRenderer [content]="model" format="text"></div>
-  </fieldset>
+    <fieldset>
+      <legend>Text</legend>
+      <div fsEditorRenderer [content]="model" format="text"></div>
+    </fieldset>
 
-  <fieldset>
-    <legend>Quill Object</legend>
-    {{model|json}}
-  </fieldset>
-</ng-container>
+    <fieldset>
+      <legend>Quill Object</legend>
+      {{model|json}}
+    </fieldset>
+  </ng-container>
 
-<button mat-raised-button (click)="set()">Set Content</button>
-
+  <button mat-raised-button color="primary">Save</button>
+  <button mat-raised-button type="button" (click)="set()">Set Content</button>
+</form>
