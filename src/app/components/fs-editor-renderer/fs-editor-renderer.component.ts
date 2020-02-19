@@ -5,7 +5,7 @@ import {
   ElementRef,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html/dist/commonjs/QuillDeltaToHtmlConverter';
+import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html';
 
 
 @Component({
