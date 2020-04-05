@@ -2,7 +2,8 @@
   <fs-editor-rich-text
     [options]="options"
     [(ngModel)]="model"
-    required
+    [required]="true"
+    hint="Hint!"
     label="Content"
     name="editor">
   </fs-editor-rich-text>

@@ -1,14 +1,12 @@
-<div *ngIf="(initialized | async) || initializing; else clickInit">
-  <fs-label-field>
+<ng-container *ngIf="(initialized | async) || initializing; else clickInit">
+  <fs-label-field *ngIf="label || required || hint; else editorContainer" [topMargin]="label">
     <fs-label *ngIf="label" class="fs-form-label">{{ label }}</fs-label>
-
-    <div class="editor-container" [ngClass]="{ 'fade-in': options.initOnClick }">
-      <div class="editor" #editor></div>
-    </div>
-
-    <fs-label-message class="fs-form-message"></fs-label-message>
+    <ng-container *ngTemplateOutlet="editorContainer"></ng-container>
+    <fs-label-message class="fs-form-message">
+      <div class="fs-form-hint" *ngIf="hint">{{hint}}</div>
+    </fs-label-message>
   </fs-label-field>
-</div>
+</ng-container>
 
 <ng-template #clickInit>
   <div (click)="initializeEmpty()" class="click-panel" [ngClass]="{ 'has-content': ngModel && ngModel.length }" *ngIf="options.initOnClick">
@@ -20,5 +18,11 @@
       <span fsEditorRenderer [content]="ngModel" *ngIf="ngModel && ngModel.length; else placeholder"></span>
       <ng-template #placeholder><span class="placeholder">{{options.placeholder}}</span></ng-template>
     </div>
+  </div>
+</ng-template>
+
+<ng-template #editorContainer>
+  <div class="editor-container" [ngClass]="{ 'fade-in': options.initOnClick }">
+    <div class="editor" #editor></div>
   </div>
 </ng-template>

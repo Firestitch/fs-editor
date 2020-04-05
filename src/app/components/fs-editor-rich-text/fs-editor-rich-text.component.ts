@@ -58,6 +58,9 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
   @Input()
   public label;
 
+  @Input()
+  public hint;
+
   @Output() public initialized = new EventEmitter();
   @Output() public destroyed = new EventEmitter();
 
