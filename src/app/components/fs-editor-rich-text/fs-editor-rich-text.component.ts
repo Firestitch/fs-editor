@@ -166,6 +166,15 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
     this._richTextService.editor.root.addEventListener('blur', this.blur);
     this._richTextService.editor.root.addEventListener('focus', this.focus);
 
+
+    this._richTextService.editor.keyboard.addBinding({
+      key: 's',
+      shortKey: true
+    }, function(range, context) {
+      debugger;
+      alert('Save!');
+    });
+
     this._focus$
     .pipe(
       debounceTime(100),
