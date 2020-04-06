@@ -1,9 +1,9 @@
 <ng-container *ngIf="(initialized | async) || initializing; else clickInit">
-  <fs-label-field *ngIf="label || required || hint; else editorContainer" [topMargin]="label">
-    <fs-label *ngIf="label" class="fs-form-label">{{ label }}</fs-label>
+  <fs-label-field *ngIf="options.label || options.hint; else editorContainer" [topMargin]="options.label">
+    <fs-label *ngIf="options.label" class="fs-form-label">{{ options.label }}</fs-label>
     <ng-container *ngTemplateOutlet="editorContainer"></ng-container>
     <fs-label-message class="fs-form-message">
-      <div class="fs-form-hint" *ngIf="hint">{{hint}}</div>
+      <div class="fs-form-hint" *ngIf="options.hint">{{options.hint}}</div>
     </fs-label-message>
   </fs-label-field>
 </ng-container>

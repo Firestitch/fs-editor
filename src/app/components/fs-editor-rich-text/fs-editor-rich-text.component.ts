@@ -53,9 +53,6 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
   @Input() public ngModel;
 
   @Input()
-  public required = false;
-
-  @Input()
   public label;
 
   @Input()
@@ -85,6 +82,15 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
   onTouched = () => {};
 
   public ngOnInit() {
+
+    if (this.label) {
+      this.options.label = this.label;
+    }
+
+    if (this.hint) {
+      this.options.hint = this.hint;
+    }
+
     this._richTextService.setOptions(this.options);
 
     if (!this.options.initOnClick) {
@@ -100,10 +106,6 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
 
     const err: any = {};
     const textLength = this._richTextService.editor.getText().trim().length;
-
-    if (this.required !== undefined && !textLength) {
-      err.requiredError = 'This field is required';
-    }
 
     if (this.options.maxLength && isArray(this.ngModel)) {
       const length = JSON.stringify(this.ngModel).length;
