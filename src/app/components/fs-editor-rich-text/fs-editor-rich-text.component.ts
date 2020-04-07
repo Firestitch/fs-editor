@@ -166,15 +166,6 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
     this._richTextService.editor.root.addEventListener('blur', this.blur);
     this._richTextService.editor.root.addEventListener('focus', this.focus);
 
-
-    this._richTextService.editor.keyboard.addBinding({
-      key: 's',
-      shortKey: true
-    }, function(range, context) {
-      debugger;
-      alert('Save!');
-    });
-
     this._focus$
     .pipe(
       debounceTime(100),
@@ -223,9 +214,12 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
     }
 
     this.ngModel = contents;
-    this.onChange(contents);
-    if (this.options.change) {
-      this.options.change.apply(null, [contents]);
+
+    if (source === 'user') {
+      this.onChange(contents);
+      if (this.options.change) {
+        this.options.change.apply(null, [contents]);
+      }
     }
 
     this._cdRef.markForCheck();
