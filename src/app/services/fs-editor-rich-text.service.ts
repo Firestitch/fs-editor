@@ -1,4 +1,3 @@
-import { SmartBreak } from './../modules/smart-break';
 import { ElementRef, Inject, Injectable, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -12,6 +11,7 @@ import { Quill as quill } from 'quill';
 
 declare var require: any;
 var Quill: any = undefined;
+Quill = require('quill');
 
 @Injectable()
 export class FsEditorRichTextService implements OnDestroy {
@@ -27,15 +27,6 @@ export class FsEditorRichTextService implements OnDestroy {
   constructor(@Inject(FS_EDITOR_RICH_TEXT_CONFIG) private _defaultEditorOptions,
               private _prompt: FsPrompt) {
     this._editorOptions = cloneDeep(this._defaultEditorOptions);
-  }
-
-  public ngOnDestroy(): void {
-    if (this._clipboard) {
-      this._clipboard.destroy();
-    }
-
-    this._destroy$.next();
-    this._destroy$.complete();
   }
 
   public setOptions(options: FsEditorRichTextOptions = {}) {
@@ -61,7 +52,6 @@ export class FsEditorRichTextService implements OnDestroy {
 
   public setTargetElement(el: ElementRef) {
     this._targetElement = el;
-
     // For correct position tooltip and other popup elements from editor
     this._editorOptions.bounds = this._targetElement.nativeElement;
     this._editorOptions.scrollingContainer = this._targetElement.nativeElement;
@@ -69,52 +59,42 @@ export class FsEditorRichTextService implements OnDestroy {
 
   public initEditor() {
 
-    if (!Quill) {
-      Quill = require('quill');
-    }
-
-    SmartBreak.blotName = 'break';
-    SmartBreak.tagName = 'BR'
-
-    Quill.register('modules/break', SmartBreak);
-
-    const Delta = Quill.import('delta');
+    //Quill.register(SmartBreak);
 
     this._initIcons();
-
-    if (!this._editorOptions.image) {
-      this._initImage();
-    }
+    this._initImage();
 
     const modules = {
       toolbar: this._editorOptions.modules.toolbar,
-      clipboard: {
-        matchers: [
-          ['BR', () => {
-            const newDelta = new Delta();
-            newDelta.insert({ break: '' });
-            return newDelta;
-          }]
-        ]
-      },
+
       keyboard: {
         bindings: {
-          enter: {
-            key: 13,
-            shiftKey: true,
-            handler: (range, context) => {
-              const currentLeaf = this.quill.getLeaf(range.index)[0];
-              const nextLeaf = this.quill.getLeaf(range.index + 1)[0];
-              this.quill.insertEmbed(range.index, 'break', true, Quill.sources.USER);
-              // Insert a second break if:
-              // At the end of the editor, OR next leaf has a different parent (<p>)
-              if (nextLeaf === null || currentLeaf.parent !== nextLeaf.parent) {
-                this.quill.insertEmbed(range.index, 'break', true, Quill.sources.USER);
+            // Used for capture shift + tab to prevent scrolling to top
+            shiftTab: {
+              key: 'tab',
+              shiftKey: true,
+              handler: (range, context) => {
+                return false;
               }
-              // Now that we've inserted a line break, move the cursor forward
-              this.quill.setSelection(range.index + 1, Quill.sources.SILENT);
             }
-          }
+
+          // enter: {
+          //   key: 13,
+          //   shiftKey: true,
+          //   handler: (range, context) => {
+
+          //     const currentLeaf = this.quill.getLeaf(range.index)[0];
+          //     const nextLeaf = this.quill.getLeaf(range.index + 1)[0];
+          //     this.quill.insertEmbed(range.index, 'break', true, Quill.sources.USER);
+          //     // Insert a second break if:
+          //     // At the end of the editor, OR next leaf has a different parent (<p>)
+          //     if (nextLeaf === null || currentLeaf.parent !== nextLeaf.parent) {
+          //       this.quill.insertEmbed(range.index, 'break', true, Quill.sources.USER);
+          //     }
+          //     // Now that we've inserted a line break, move the cursor forward
+          //     this.quill.setSelection(range.index + 1, Quill.sources.SILENT);
+          //   }
+          // }
         }
       }
     };
@@ -122,8 +102,6 @@ export class FsEditorRichTextService implements OnDestroy {
     this._editorOptions.modules = modules;
 
     this.quill = new Quill(this._targetElement.nativeElement, this._editorOptions);
-
-    this._initBottomLine();
 
     if (this._editorOptions.image && this._editorOptions.image.upload) {
       this.quill.getModule('toolbar').addHandler('image', () => {
@@ -133,6 +111,7 @@ export class FsEditorRichTextService implements OnDestroy {
 
     this._initLink();
     this._initClipboard();
+    this._initBottomLine();
 
     this.initialized = true;
   }
@@ -140,6 +119,15 @@ export class FsEditorRichTextService implements OnDestroy {
   public destroy() {
     this.quill = null;
     this.initialized = false;
+  }
+
+  public ngOnDestroy(): void {
+    if (this._clipboard) {
+      this._clipboard.destroy();
+    }
+
+    this._destroy$.next();
+    this._destroy$.complete();
   }
 
   private _initClipboard() {
@@ -177,17 +165,13 @@ export class FsEditorRichTextService implements OnDestroy {
         takeUntil(this._destroy$),
       )
       .subscribe((url) => {
-        this._insertImageToEditor(url);
+        let index = this.quill.getLength();
+        if (this.quill.getSelection()) {
+          index = this.quill.getSelection().index;
+        }
+
+        this.quill.insertEmbed(index, 'image', url);
       });
-  }
-
-  private _insertImageToEditor(url) {
-    let index = this.quill.getLength();
-    if (this.quill.getSelection()) {
-      index = this.quill.getSelection().index;
-    }
-
-    this.quill.insertEmbed(index, 'image', url);
   }
 
   private _initBottomLine() {
@@ -222,6 +206,11 @@ export class FsEditorRichTextService implements OnDestroy {
   }
 
   private _initImage() {
+
+    if (this._editorOptions.image) {
+      return;
+    }
+
     this._editorOptions.modules.toolbar = this._editorOptions.modules.toolbar.filter(item => {
       if (item !== 'image') {
 

@@ -33,6 +33,10 @@
     margin-left: 25px;
     list-style-type: none;
     counter-increment: list-0;
+
+    &::before {
+      margin-right: 0.3em;
+    }
   }
 
   li.ql-indent-1 {
@@ -62,33 +66,33 @@
 
   ul {
     li:before {
-      content: counter(list-0, decimal) '. ';
+      content: '\2022';
     }
   }
 
   ol {
     li:before {
-      content: counter(list-0, decimal) '. ';
+      content: counter(list-0, decimal) '.';
     }
 
     li.ql-indent-1:before {
-      content: counter(list-1, lower-alpha) '. ';
+      content: counter(list-1, lower-alpha) '.';
     }
 
     li.ql-indent-2:before {
-      content: counter(list-2, lower-roman) '. ';
+      content: counter(list-2, lower-roman) '.';
     }
 
     li.ql-indent-3:before {
-      content: counter(list-3, decimal) '. ';
+      content: counter(list-3, decimal) '.';
     }
 
     li.ql-indent-4:before {
-      content: counter(list-4, lower-alpha) '. ';
+      content: counter(list-4, lower-alpha) '.';
     }
 
     li.ql-indent-5:before {
-      content: counter(list-5, lower-roman) '. ';
+      content: counter(list-5, lower-roman) '.';
     }
   }
 }

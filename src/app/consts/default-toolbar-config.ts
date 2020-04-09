@@ -25,6 +25,7 @@ export const DEFAULT_TOOLBAR_CONFIG = [
   ],
   [
     'link',
-    'image'
+    'image',
+    'video'
   ]
 ];

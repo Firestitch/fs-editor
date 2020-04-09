@@ -50,7 +50,7 @@
     "@firestitch/common": "^7.0.5",
     "@firestitch/drawer": "^8.0.2",
     "@firestitch/example": "^8.0.0",
-    "@firestitch/form": "^8.7.0",
+    "@firestitch/form": "^8.7.15",
     "@firestitch/iframe": "^8.0.0",
     "@firestitch/label": "^8.2.0",
     "@firestitch/style": "^8.0.2",

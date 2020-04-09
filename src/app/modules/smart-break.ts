@@ -6,6 +6,7 @@ const Break = Quill.import('blots/break');
 const Embed = Quill.import('blots/embed');
 
 export class SmartBreak extends Break {
+
   length() {
     return 1;
   }
@@ -19,6 +20,4 @@ export class SmartBreak extends Break {
 }
 
 SmartBreak.blotName = 'break';
-SmartBreak.tagName = 'BR'
-
-Quill.register(SmartBreak);
+SmartBreak.tagName = 'BR';
