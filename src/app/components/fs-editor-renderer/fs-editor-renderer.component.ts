@@ -4,6 +4,7 @@ import {
   OnInit,
   ElementRef,
   ChangeDetectionStrategy,
+  HostBinding,
 } from '@angular/core';
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html';
 
@@ -16,6 +17,8 @@ import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html';
 })
 export class FsEditorRendererComponent implements OnInit {
 
+  @HostBinding('class.fs-editor-default') classEditorReset = true;
+
   @Input() format: 'html' | 'text' = 'html';
 
   @Input('content')
@@ -24,6 +27,7 @@ export class FsEditorRendererComponent implements OnInit {
     this._content = data;
 
     const config = {
+      multiLineParagraph: false,
       inlineStyles: {
         color: (value, op) => {
           return 'color:' + value;

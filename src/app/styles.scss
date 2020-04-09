@@ -1,89 +1,164 @@
-@import "~quill/dist/quill.core.css";
-@import "~quill/dist/quill.snow.css";
+@import "styles/default";
 
+.editor-container {
 
-.ql-formats {
-  button, .ql-picker {
-    padding: 0 !important;
+  * {
+    outline: none;
+  }
 
-    .material-icons {
+  .ql-clipboard {
+    display: none;
+  }
+
+  .ql-formats {
+    margin-right: 15px;
+
+    button,
+    .ql-picker {
+      display: inline-block;
+      vertical-align: middle;
+      padding: 0 6px;
+      cursor: pointer;
+    }
+
+    button {
+      background: transparent;
+      border: none;
+
+      .material-icons {
+        color: #444;
+        transform: scale(.85);
+      }
+    }
+
+    .ql-picker {
       color: #444;
-      transform: scale(.85);
-    }
-  }
+      line-height: 26px;
+      height: 26px;
+      position: relative;
+      vertical-align: middle;
 
-  .ql-color, .ql-background, .ql-align {
-    .ql-picker-label {
-      padding: 0;
-      outline: none;
-      border: none;
-    }
-  }
-}
+      &.ql-header {
+        padding-left: 0;
+        min-width: 85px;
+        margin-right: -15px;
 
-.ql-container.ql-snow {
-  border: none;
-  border-bottom: 1px solid #949494;
-}
+        svg {
+          display: none;
+        }
 
-.ql-container,
-.ql-toolbar {
-  font: inherit;
-}
+        .ql-picker-label {
 
-.ql-editor {
-  padding: 8px 0;
+          &[data-value]:not([data-value=''])::before {
+            content: "Heading " attr(data-value) " ▾";
+          }
 
-  blockquote {
-    border-width: 3px;
-  }
+          &::before {
+            content: 'Normal ▾';
+          }
+        }
 
-  &.ql-blank::before {
-    left: 0;
-    color: rgba(0, 0, 0, 0.54);
-    font-style: normal;
-  }
-}
+        .ql-picker-item {
+          display: block;
+          line-height: normal;
+          padding-bottom: 8px;
 
-.bottom-line {
-  opacity: 0;
-  transform-origin: 50%;
-  transform: scaleX(.5);
-  transition: background-color .3s cubic-bezier(.55,0,.55,.2);
-  width: 100%;
-  border-bottom: 1px solid #949494;
-  position: absolute;
-  bottom: 0;
-}
+          &:last-child {
+            padding: 0;
+          }
 
-.ql-snow {
+          &[data-value]:not([data-value=''])::after {
+            content: "Heading " attr(data-value);
+          }
 
-  .ql-icon-picker .ql-picker-item {
-    width: auto;
-    height: auto;
-  }
+          &::after {
+            content: "Normal";
+          }
 
-  &.ql-toolbar {
+          &[data-value="1"] {
+            font-size: 150%;
+          }
 
-    border: none;
-    padding: 0;
+          &[data-value="2"] {
+            font-size: 140%;
+          }
 
-    .ql-picker-label {
-      padding-left: 0;
-      border: none;
-      outline: none;
+          &[data-value="3"] {
+            font-size: 130%;
+          }
 
-      .ql-stroke + .ql-stroke {
+          &[data-value="4"] {
+            font-size: 120%;
+          }
+
+          &[data-value="5"] {
+            font-size: 110%;
+          }
+        }
+      }
+
+      .ql-picker-options {
+        border-color: #ccc;
+        display: block;
+        margin-top: -1px;
+        top: 100%;
+        z-index: 1;
+        border: 1px solid transparent;
+        box-shadow: rgba(0,0,0,0.2) 0 2px 8px;
+        background-color: #fff;
         display: none;
+        padding: 8px;
+        position: absolute;
+        white-space: nowrap;
+        border-radius: 4px;
       }
 
-      svg {
-        margin-top: -13px !important;
+      &.ql-expanded {
+        .ql-picker-options {
+          display: block;
+        }
+      }
+    }
+
+    .ql-color-picker {
+
+      .ql-picker-options {
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+      }
+
+      &.ql-expanded .ql-picker-options {
+        display: grid;
+        grid-gap: 2px;
+      }
+
+      .ql-picker-item {
+        border: 1px solid transparent;
+        height: 16px;
+        width: 16px;
       }
     }
   }
-}
 
+  .ql-tooltip {
+    display: none;
+  }
+
+  .ql-container {
+    border-bottom: 1px solid #949494;
+    position: relative;
+  }
+
+  .bottom-line {
+    opacity: 0;
+    transform-origin: 50%;
+    transform: scaleX(.5);
+    transition: background-color .3s cubic-bezier(.55,0,.55,.2);
+    width: 100%;
+    border-bottom: 1px solid #949494;
+    position: absolute;
+    bottom: 0;
+  }
+}
 
 
 fs-editor-rich-text {

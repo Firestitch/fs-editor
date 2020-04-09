@@ -26,7 +26,9 @@ import { isArray } from 'lodash-es';
 
 import { FsEditorRichTextOptions } from '../../interfaces/fs-editor-rich-text.interface';
 import { FsEditorRichTextService } from '../../services/fs-editor-rich-text.service';
+import { Quill as quill } from 'quill';
 
+var Quill: any = undefined;
 
 @Component({
   selector: 'fs-editor-rich-text',
@@ -100,12 +102,12 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
 
   public validate(control: AbstractControl): ValidationErrors | null {
 
-    if (!this._richTextService.editor) {
+    if (!this._richTextService.quill) {
       return null
     }
 
     const err: any = {};
-    const textLength = this._richTextService.editor.getText().trim().length;
+    const textLength = this._richTextService.quill.getText().trim().length;
 
     if (this.options.maxLength && isArray(this.ngModel)) {
       const length = JSON.stringify(this.ngModel).length;
@@ -129,9 +131,9 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
     setTimeout(() => {
       this._richTextService.setTargetElement(this.container);
       this._richTextService.initEditor();
-      this._richTextService.editor.setContents(this.ngModel);
+      this._richTextService.quill.setContents(this.ngModel);
       this.subscribe();
-      this._richTextService.editor.focus();
+      this._richTextService.quill.focus();
       this.initialized.emit();
     });
   }
@@ -143,8 +145,8 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
   }
 
   public writeValue(data: any): void {
-    if (this._richTextService.editor) {
-      this._richTextService.editor.setContents(data);
+    if (this._richTextService.quill) {
+      this._richTextService.quill.setContents(data, Quill.sources.API);
       this._cdRef.markForCheck();
     }
   }
@@ -162,9 +164,9 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
   }
 
   public subscribe() {
-    this._richTextService.editor.on('text-change', this._textChange);
-    this._richTextService.editor.root.addEventListener('blur', this.blur);
-    this._richTextService.editor.root.addEventListener('focus', this.focus);
+    this._richTextService.quill.on('text-change', this._textChange);
+    this._richTextService.quill.root.addEventListener('blur', this.blur);
+    this._richTextService.quill.root.addEventListener('focus', this.focus);
 
     this._focus$
     .pipe(
@@ -194,10 +196,10 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
   public destroy() {
     this.initializing = false;
 
-    if (this._richTextService.editor) {
-      this._richTextService.editor.off('text-change', this._textChange);
-      this._richTextService.editor.root.removeEventListener('blur', this.blur);
-      this._richTextService.editor.root.removeEventListener('focus', this.focus);
+    if (this._richTextService.quill) {
+      this._richTextService.quill.off('text-change', this._textChange);
+      this._richTextService.quill.root.removeEventListener('blur', this.blur);
+      this._richTextService.quill.root.removeEventListener('focus', this.focus);
     }
 
     this._richTextService.destroy();
@@ -207,7 +209,7 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
 
   private _textChange = (delta, oldDelta, source) => {
 
-    let contents = this._richTextService.editor.getContents().ops;
+    let contents = this._richTextService.quill.getContents().ops;
 
     if (contents.length === 1 && contents[0].insert === '\n') {
       contents = [];

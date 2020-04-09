@@ -1,3 +1,4 @@
+import { SmartBreak } from './../modules/smart-break';
 import { ElementRef, Inject, Injectable, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -15,7 +16,7 @@ var Quill: any = undefined;
 @Injectable()
 export class FsEditorRichTextService implements OnDestroy {
 
-  public editor: quill;
+  public quill: quill;
   public initialized = false;
 
   private _editorOptions: FsEditorRichTextOptions;
@@ -67,75 +68,77 @@ export class FsEditorRichTextService implements OnDestroy {
   }
 
   public initEditor() {
+
     if (!Quill) {
       Quill = require('quill');
     }
 
-    this._setupIcons();
+    SmartBreak.blotName = 'break';
+    SmartBreak.tagName = 'BR'
+
+    Quill.register('modules/break', SmartBreak);
+
+    const Delta = Quill.import('delta');
+
+    this._initIcons();
 
     if (!this._editorOptions.image) {
-      this._editorOptions.modules.toolbar = this._editorOptions.modules.toolbar.filter(item => {
-        if (item !== 'image') {
-
-          remove(item, (i) => {
-            return i === 'image';
-          });
-
-          if (item.length) {
-            return true;
-          }
-        }
-      });
+      this._initImage();
     }
 
-    this.editor = new Quill(this._targetElement.nativeElement, this._editorOptions);
+    const modules = {
+      toolbar: this._editorOptions.modules.toolbar,
+      clipboard: {
+        matchers: [
+          ['BR', () => {
+            const newDelta = new Delta();
+            newDelta.insert({ break: '' });
+            return newDelta;
+          }]
+        ]
+      },
+      keyboard: {
+        bindings: {
+          enter: {
+            key: 13,
+            shiftKey: true,
+            handler: (range, context) => {
+              const currentLeaf = this.quill.getLeaf(range.index)[0];
+              const nextLeaf = this.quill.getLeaf(range.index + 1)[0];
+              this.quill.insertEmbed(range.index, 'break', true, Quill.sources.USER);
+              // Insert a second break if:
+              // At the end of the editor, OR next leaf has a different parent (<p>)
+              if (nextLeaf === null || currentLeaf.parent !== nextLeaf.parent) {
+                this.quill.insertEmbed(range.index, 'break', true, Quill.sources.USER);
+              }
+              // Now that we've inserted a line break, move the cursor forward
+              this.quill.setSelection(range.index + 1, Quill.sources.SILENT);
+            }
+          }
+        }
+      }
+    };
 
-    this._appendBottomLine();
+    this._editorOptions.modules = modules;
+
+    this.quill = new Quill(this._targetElement.nativeElement, this._editorOptions);
+
+    this._initBottomLine();
 
     if (this._editorOptions.image && this._editorOptions.image.upload) {
-      this.editor.getModule('toolbar').addHandler('image', () => {
+      this.quill.getModule('toolbar').addHandler('image', () => {
         this._selectImage();
       });
     }
 
-    this.editor.getModule('toolbar').addHandler('link', (value) => {
-
-      const selection = this.editor.getSelection();
-
-      if (!selection.length) {
-        return;
-      }
-
-      const text = this.editor.getText(selection.index, selection.length);
-
-      this._prompt.input({
-        label: 'Please enter a URL',
-        title: 'Link',
-        commitLabel: 'Save',
-        required: true
-      })
-      .pipe(
-        takeUntil(this._destroy$)
-      )
-      .subscribe((url: string) => {
-
-        if (url) {
-          if (!url.match(/^http/)) {
-            url = 'http://'.concat(url);
-          }
-
-          this.editor.deleteText(selection.index, selection.length);
-          this.editor.insertText(selection.index, text, 'link', url);
-        }
-      });
-    });
-
+    this._initLink();
     this._initClipboard();
+
     this.initialized = true;
   }
 
   public destroy() {
-    this.editor = null;
+    this.quill = null;
     this.initialized = false;
   }
 
@@ -179,21 +182,21 @@ export class FsEditorRichTextService implements OnDestroy {
   }
 
   private _insertImageToEditor(url) {
-    let index = this.editor.getLength();
-    if (this.editor.getSelection()) {
-      index = this.editor.getSelection().index;
+    let index = this.quill.getLength();
+    if (this.quill.getSelection()) {
+      index = this.quill.getSelection().index;
     }
 
-    this.editor.insertEmbed(index, 'image', url);
+    this.quill.insertEmbed(index, 'image', url);
   }
 
-  private _appendBottomLine() {
+  private _initBottomLine() {
     const newNode = document.createElement('div');
     newNode.className = 'bottom-line';
-    (this.editor as any).container.appendChild(newNode);
+    (this.quill as any).container.appendChild(newNode);
   }
 
-  private _setupIcons() {
+  private _initIcons() {
     const icons = Quill.import('ui/icons');
 
     icons['bold'] = '<i class="material-icons">format_bold</i>';
@@ -216,5 +219,54 @@ export class FsEditorRichTextService implements OnDestroy {
     icons['blockquote'] = '<i class="material-icons">format_quote</i>';
     icons['code-block'] = '<i class="material-icons">code</i>';
     icons['blockquote'] = '<i class="material-icons">format_quote</i>';
+  }
+
+  private _initImage() {
+    this._editorOptions.modules.toolbar = this._editorOptions.modules.toolbar.filter(item => {
+      if (item !== 'image') {
+
+        remove(item, (i) => {
+          return i === 'image';
+        });
+
+        if (item.length) {
+          return true;
+        }
+      }
+    });
+  }
+
+  private _initLink() {
+    this.quill.getModule('toolbar').addHandler('link', (value) => {
+
+      const selection = this.quill.getSelection();
+
+      if (!selection.length) {
+        return;
+      }
+
+      const text = this.quill.getText(selection.index, selection.length);
+
+      this._prompt.input({
+        label: 'Please enter a URL',
+        title: 'Link',
+        commitLabel: 'Save',
+        required: true
+      })
+      .pipe(
+        takeUntil(this._destroy$)
+      )
+      .subscribe((url: string) => {
+
+        if (url) {
+          if (!url.match(/^http/)) {
+            url = 'http://'.concat(url);
+          }
+
+          this.quill.deleteText(selection.index, selection.length);
+          this.quill.insertText(selection.index, text, 'link', url);
+        }
+      });
+    });
   }
 }
