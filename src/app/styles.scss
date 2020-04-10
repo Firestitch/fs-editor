@@ -1,5 +1,3 @@
-@import "styles/default";
-
 .editor-container {
 
   * {
@@ -164,6 +162,112 @@
   }
 }
 
+.fs-editor-default {
+
+  p, ol, ul, pre, blockquote, h1, h2, h3, h4, h5, h6 {
+    margin: 10px 0;
+    padding: 0;
+    line-height: normal;
+  }
+
+  h1 {
+    margin: 15px 0;
+  }
+
+  h2 {
+    margin: 10px 0;
+  }
+
+  h3 {
+    margin: 5px 0;
+  }
+
+  blockquote {
+    border-left: 3px solid #ccc;
+    margin: 5px 0;
+    padding: 6px 16px;
+  }
+
+  .ql-syntax {
+    background: #ececec;
+    font-size: 88%;
+    padding: 10px;
+    border-radius: 3px;
+    font-family: monospace;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  li {
+    margin: 5px 0;
+    margin-left: 25px;
+    list-style-type: none;
+    counter-increment: list-0;
+
+    &::before {
+      margin-right: 0.3em;
+    }
+  }
+
+  li.ql-indent-1 {
+    margin-left: 100px;
+    counter-increment: list-1;
+  }
+
+  li.ql-indent-2 {
+    margin-left: 150px;
+    counter-increment: list-2;
+  }
+
+  li.ql-indent-3 {
+    margin-left: 200px;
+    counter-increment: list-3;
+  }
+
+  li.ql-indent-4 {
+    margin-left: 250px;
+    counter-increment: list-4;
+  }
+
+  li.ql-indent-5 {
+    margin-left: 300px;
+    counter-increment: list-5;
+  }
+
+  ul {
+    li:before {
+      content: '\2022';
+    }
+  }
+
+  ol {
+    li:before {
+      content: counter(list-0, decimal) '.';
+    }
+
+    li.ql-indent-1:before {
+      content: counter(list-1, lower-alpha) '.';
+    }
+
+    li.ql-indent-2:before {
+      content: counter(list-2, lower-roman) '.';
+    }
+
+    li.ql-indent-3:before {
+      content: counter(list-3, decimal) '.';
+    }
+
+    li.ql-indent-4:before {
+      content: counter(list-4, lower-alpha) '.';
+    }
+
+    li.ql-indent-5:before {
+      content: counter(list-5, lower-roman) '.';
+    }
+  }
+}
 
 fs-editor-rich-text {
 
@@ -179,6 +283,7 @@ fs-editor-rich-text {
     }
   }
 }
+
 
 @mixin fs-editor($theme) {
 

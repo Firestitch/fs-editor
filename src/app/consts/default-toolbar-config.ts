@@ -1,7 +1,5 @@
-
-
 export const DEFAULT_TOOLBAR_CONFIG = [
-  [{ header: [1, 2, 3, false] }],
+  [{ header: [1, 2, 3, 4, 5, false] }],
   [
     'bold',
     'italic',
@@ -9,8 +7,8 @@ export const DEFAULT_TOOLBAR_CONFIG = [
     'strike',
   ],
   [
-    {color: []},
-    {background: []},
+    { color: [] },
+    { background: [] },
   ],
   [
     { list: 'ordered' },

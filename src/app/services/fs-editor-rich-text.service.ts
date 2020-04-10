@@ -172,7 +172,7 @@ export class FsEditorRichTextService implements OnDestroy {
           index = this.quill.getSelection().index;
         }
 
-        this.quill.insertEmbed(index, 'image', url);
+        this.quill.insertEmbed(index, 'image', url, 'user');
       });
   }
 
@@ -254,7 +254,7 @@ export class FsEditorRichTextService implements OnDestroy {
             this.quill.deleteText(selection.index, selection.length);
           }
 
-          this.quill.insertText(selection.index || 0, text || url, 'link', url);
+          this.quill.insertText(selection.index || 0, text || url, 'link', url, 'user');
         }
       });
     });
@@ -279,7 +279,7 @@ export class FsEditorRichTextService implements OnDestroy {
 
         if (url) {
           const index = this.quill.getSelection().index || 0;
-          this.quill.insertEmbed(index, 'video', url)
+          this.quill.insertEmbed(index, 'video', url, 'user')
         }
       });
     });
