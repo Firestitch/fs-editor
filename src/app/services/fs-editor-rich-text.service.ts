@@ -8,6 +8,7 @@ import { ClipboardPaste } from '../classes/clipboard-paste';
 import { DEFAULT_TOOLBAR_CONFIG } from '../consts/default-toolbar-config';
 import { FsPrompt } from '@firestitch/prompt';
 import { Quill as quill } from 'quill';
+import Video from '../formats/video.format';
 
 declare var require: any;
 var Quill: any = undefined;
@@ -110,6 +111,7 @@ export class FsEditorRichTextService implements OnDestroy {
     }
 
     this._initLink();
+    this._initVideo();
     this._initClipboard();
     this._initBottomLine();
 
@@ -237,9 +239,9 @@ export class FsEditorRichTextService implements OnDestroy {
       const text = this.quill.getText(selection.index, selection.length);
 
       this._prompt.input({
-        label: 'Please enter a URL',
-        title: 'Link',
-        commitLabel: 'Save',
+        label: 'Link URL',
+        title: 'Create Link',
+        commitLabel: 'Create',
         required: true
       })
       .pipe(
@@ -258,4 +260,31 @@ export class FsEditorRichTextService implements OnDestroy {
       });
     });
   }
+
+  private _initVideo() {
+
+    Quill.register(Video);
+
+    this.quill.getModule('toolbar').addHandler('video', (value) => {
+
+      this._prompt.input({
+        label: 'YouTube URL',
+        title: 'Insert Video',
+        commitLabel: 'Insert',
+        required: true
+      })
+      .pipe(
+        takeUntil(this._destroy$)
+      )
+      .subscribe((url: string) => {
+
+        if (url) {
+          const index = this.quill.getSelection().index || 0;
+          this.quill.insertEmbed(index, 'video', url)
+        }
+      });
+    });
+  }
+
+
 }
