@@ -232,10 +232,6 @@ export class FsEditorRichTextService implements OnDestroy {
 
       const selection = this.quill.getSelection();
 
-      if (!selection.length) {
-        return;
-      }
-
       const text = this.quill.getText(selection.index, selection.length);
 
       this._prompt.input({
@@ -254,8 +250,11 @@ export class FsEditorRichTextService implements OnDestroy {
             url = 'http://'.concat(url);
           }
 
-          this.quill.deleteText(selection.index, selection.length);
-          this.quill.insertText(selection.index, text, 'link', url);
+          if (selection.index) {
+            this.quill.deleteText(selection.index, selection.length);
+          }
+
+          this.quill.insertText(selection.index || 0, text || url, 'link', url);
         }
       });
     });

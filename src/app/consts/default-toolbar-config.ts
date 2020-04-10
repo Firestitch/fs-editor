@@ -24,7 +24,6 @@ export const DEFAULT_TOOLBAR_CONFIG = [
     'code-block',
   ],
   [
-    'link',
     'image',
     'video'
   ]
