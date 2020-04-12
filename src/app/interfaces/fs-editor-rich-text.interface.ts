@@ -12,7 +12,8 @@ export interface FsEditorRichTextOptions extends QuillOptionsStatic {
   initOnClick?: boolean,
   placeholder?: string,
   maxLength?: number,
-  keyboard?: any
+  keyboard?: any,
+  autofocus?: boolean
 }
 
 export interface FsEditorImageUploadInterface {

@@ -53,12 +53,8 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
 
   @Input() public options: FsEditorRichTextOptions = {};
   @Input() public ngModel;
-
-  @Input()
-  public label;
-
-  @Input()
-  public hint;
+  @Input() public label;
+  @Input() public hint;
 
   @Output() public initialized = new EventEmitter();
   @Output() public destroyed = new EventEmitter();
@@ -107,8 +103,6 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
     }
 
     const err: any = {};
-    const textLength = this._richTextService.quill.getText().trim().length;
-
     if (this.options.maxLength && isArray(this.ngModel)) {
       const length = JSON.stringify(this.ngModel).length;
       const maxLength = this.options.maxLength;
@@ -133,9 +127,19 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
       this._richTextService.initEditor();
       this._richTextService.quill.setContents(this.ngModel);
       this.subscribe();
-      this._richTextService.quill.focus();
       this.initialized.emit();
+      if (this.options.autofocus) {
+        this.focus();
+      }
     });
+  }
+
+  public focus() {
+    this._richTextService.quill.focus();
+  }
+
+  public clear() {
+    this.writeValue('');
   }
 
   public initializeEmpty() {
@@ -146,7 +150,7 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
 
   public writeValue(data: any): void {
     if (this._richTextService.quill) {
-      this._richTextService.quill.setContents(data, Quill.sources.API);
+      this._richTextService.quill.setContents(data, 'api');
       this._cdRef.markForCheck();
     }
   }
@@ -165,8 +169,8 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
 
   public subscribe() {
     this._richTextService.quill.on('text-change', this._textChange);
-    this._richTextService.quill.root.addEventListener('blur', this.blur);
-    this._richTextService.quill.root.addEventListener('focus', this.focus);
+    this._richTextService.quill.root.addEventListener('blur', this._blured);
+    this._richTextService.quill.root.addEventListener('focus', this._focused);
 
     this._focus$
     .pipe(
@@ -179,11 +183,11 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
     });
   }
 
-  public blur = () => {
+  private _blured = () => {
     this._focus$.next(false);
   }
 
-  public focus = () => {
+  private _focused = () => {
     this._focus$.next(true);
   }
 
@@ -198,8 +202,8 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
 
     if (this._richTextService.quill) {
       this._richTextService.quill.off('text-change', this._textChange);
-      this._richTextService.quill.root.removeEventListener('blur', this.blur);
-      this._richTextService.quill.root.removeEventListener('focus', this.focus);
+      this._richTextService.quill.root.removeEventListener('blur', this._blured);
+      this._richTextService.quill.root.removeEventListener('focus', this._focused);
     }
 
     this._richTextService.destroy();

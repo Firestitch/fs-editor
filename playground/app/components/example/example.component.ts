@@ -25,7 +25,8 @@ export class ExampleComponent {
     },
     maxLength: 100,
     placeholder: 'Placeholder Text...',
-    change: (data) => {}
+    change: (data) => {},
+    autofocus: true
   };
 
   constructor(private _fsApi: FsApi,
