@@ -1,5 +1,4 @@
 .editor-container {
-
   * {
     outline: none;
   }
@@ -29,7 +28,7 @@
 
       .material-icons {
         color: #444;
-        transform: scale(.85);
+        transform: scale(0.85);
       }
     }
 
@@ -50,13 +49,12 @@
         }
 
         .ql-picker-label {
-
-          &[data-value]:not([data-value=''])::before {
+          &[data-value]:not([data-value=""])::before {
             content: "Heading " attr(data-value) " ▾";
           }
 
           &::before {
-            content: 'Normal ▾';
+            content: "Normal ▾";
           }
         }
 
@@ -69,7 +67,7 @@
             padding: 0;
           }
 
-          &[data-value]:not([data-value=''])::after {
+          &[data-value]:not([data-value=""])::after {
             content: "Heading " attr(data-value);
           }
 
@@ -106,7 +104,7 @@
         top: 100%;
         z-index: 1;
         border: 1px solid transparent;
-        box-shadow: rgba(0,0,0,0.2) 0 2px 8px;
+        box-shadow: rgba(0, 0, 0, 0.2) 0 2px 8px;
         background-color: #fff;
         display: none;
         padding: 8px;
@@ -123,7 +121,6 @@
     }
 
     .ql-color-picker {
-
       .ql-picker-options {
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
       }
@@ -145,6 +142,16 @@
     display: none;
   }
 
+  .ql-toolbar {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    display: block;
+    z-index: 99;
+    border-bottom: 1px solid #dfdfdf;
+    padding: 7px 0;
+  }
+
   .ql-container {
     border-bottom: 1px solid #949494;
     position: relative;
@@ -153,8 +160,8 @@
   .bottom-line {
     opacity: 0;
     transform-origin: 50%;
-    transform: scaleX(.5);
-    transition: background-color .3s cubic-bezier(.55,0,.55,.2);
+    transform: scaleX(0.5);
+    transition: background-color 0.3s cubic-bezier(0.55, 0, 0.55, 0.2);
     width: 100%;
     border-bottom: 1px solid #949494;
     position: absolute;
@@ -163,8 +170,17 @@
 }
 
 .fs-editor-default {
-
-  p, ol, ul, pre, blockquote, h1, h2, h3, h4, h5, h6 {
+  p,
+  ol,
+  ul,
+  pre,
+  blockquote,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     margin: 10px 0;
     padding: 0;
     line-height: normal;
@@ -238,39 +254,38 @@
 
   ul {
     li:before {
-      content: '\2022';
+      content: "\2022";
     }
   }
 
   ol {
     li:before {
-      content: counter(list-0, decimal) '.';
+      content: counter(list-0, decimal) ".";
     }
 
     li.ql-indent-1:before {
-      content: counter(list-1, lower-alpha) '.';
+      content: counter(list-1, lower-alpha) ".";
     }
 
     li.ql-indent-2:before {
-      content: counter(list-2, lower-roman) '.';
+      content: counter(list-2, lower-roman) ".";
     }
 
     li.ql-indent-3:before {
-      content: counter(list-3, decimal) '.';
+      content: counter(list-3, decimal) ".";
     }
 
     li.ql-indent-4:before {
-      content: counter(list-4, lower-alpha) '.';
+      content: counter(list-4, lower-alpha) ".";
     }
 
     li.ql-indent-5:before {
-      content: counter(list-5, lower-roman) '.';
+      content: counter(list-5, lower-roman) ".";
     }
   }
 }
 
 fs-editor-rich-text {
-
   position: relative;
   display: block;
 
@@ -279,14 +294,13 @@ fs-editor-rich-text {
       opacity: 1;
       display: block;
       transform: scaleX(1);
-      transition: transform .3s cubic-bezier(.25,.8,.25,1),opacity .1s cubic-bezier(.25,.8,.25,1),background-color .3s cubic-bezier(.25,.8,.25,1);
+      transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.1s cubic-bezier(0.25, 0.8, 0.25, 1),
+        background-color 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
   }
 }
 
-
 @mixin fs-editor($theme) {
-
   $primary: mat-palette($theme);
 
   fs-editor-rich-text.focused {
