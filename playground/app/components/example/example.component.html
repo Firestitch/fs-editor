@@ -11,12 +11,19 @@
   <ng-container *ngIf="model">
     <fieldset>
       <legend>HTML</legend>
-      <div fsEditorRenderer [content]="model"></div>
+      <div
+        fsEditorRenderer
+        [content]="model"
+        [renderCustomBlot]="renderCustomBlot">
+      </div>
     </fieldset>
 
     <fieldset>
       <legend>Text</legend>
-      <div fsEditorRenderer [content]="model" format="text"></div>
+      <div
+        fsEditorRenderer
+        [content]="model"
+        format="text"></div>
     </fieldset>
 
     <fieldset>

@@ -28,7 +28,8 @@ import { FsEditorRichTextOptions } from '../../interfaces/fs-editor-rich-text.in
 import { FsEditorRichTextService } from '../../services/fs-editor-rich-text.service';
 import { Quill as quill } from 'quill';
 
-var Quill: any = undefined;
+declare var require: any;
+var Quill: any;
 
 @Component({
   selector: 'fs-editor-rich-text',
@@ -94,6 +95,7 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
     if (!this.options.initOnClick) {
       this.initialize();
     }
+
   }
 
   public validate(control: AbstractControl): ValidationErrors | null {
@@ -115,6 +117,7 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
   }
 
   public initialize() {
+
     if (this._richTextService.initialized) {
       return;
     }
@@ -131,6 +134,7 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
       if (this.options.autofocus) {
         this.focus();
       }
+
     });
   }
 

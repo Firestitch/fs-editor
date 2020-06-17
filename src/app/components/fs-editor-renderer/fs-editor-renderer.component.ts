@@ -5,8 +5,10 @@ import {
   ElementRef,
   ChangeDetectionStrategy,
   HostBinding,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
-import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html';
+import { QuillDeltaToHtmlConverter, DeltaInsertOp } from 'quill-delta-to-html';
 
 
 @Component({
@@ -15,58 +17,64 @@ import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html';
   styleUrls: [ 'fs-editor-renderer.component.scss' ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FsEditorRendererComponent implements OnInit {
+export class FsEditorRendererComponent implements OnInit, OnChanges {
 
   @HostBinding('class.fs-editor-default') classEditorReset = true;
 
   @Input() format: 'html' | 'text' = 'html';
+  @Input() renderCustomBlot: (customOp: DeltaInsertOp, contextOp: DeltaInsertOp) => string;
 
-  @Input('content')
-  set content(data) {
-
-    this._content = data;
-
-    const config = {
-      multiLineParagraph: false,
-      inlineStyles: {
-        color: (value, op) => {
-          return 'color:' + value;
-        },
-        background: (value, op) => {
-          return 'background-color:' + value;
-        },
-        indent: (value, op) => {
-          const indentSize = parseInt(value, 10) * 2;
-          const side = op.attributes.direction === 'rtl' ? 'right' : 'left';
-          return 'padding-' + side + ':' + indentSize + 'em';
-        },
-        direction: (value, op) => {
-          if (value === 'rtl') {
-            return 'direction:rtl' + (op.attributes.align ? '' : '; text-align: inherit');
-          } else {
-            return '';
-          }
-        }
-      }
-    };
-
-    const converter = new QuillDeltaToHtmlConverter(this._content || {}, config);
-
-    if (this.format === 'html') {
-      this.el.nativeElement.innerHTML = converter.convert();
-
-    } else if (this.format === 'text') {
-      const div = document.createElement('div');
-      div.innerHTML = converter.convert();
-      this.el.nativeElement.innerHTML = div.textContent || div.innerText || '';
-    }
-  }
-
-  private _content;
+  @Input() public content;
 
   constructor(private el: ElementRef) {}
 
-  public ngOnInit() {
-    this.content = this._content;
+  public ngOnInit() { }
+
+  public ngOnChanges(change: SimpleChanges) {
+
+    if (change.content) {
+      const config = {
+        multiLineParagraph: false,
+        inlineStyles: {
+          color: (value, op) => {
+            return 'color:' + value;
+          },
+          background: (value, op) => {
+            return 'background-color:' + value;
+          },
+          indent: (value, op) => {
+            const indentSize = parseInt(value, 10) * 2;
+            const side = op.attributes.direction === 'rtl' ? 'right' : 'left';
+            return 'padding-' + side + ':' + indentSize + 'em';
+          },
+          direction: (value, op) => {
+            if (value === 'rtl') {
+              return 'direction:rtl' + (op.attributes.align ? '' : '; text-align: inherit');
+            } else {
+              return '';
+            }
+          }
+        }
+      }
+
+      const converter = new QuillDeltaToHtmlConverter(this.content || {}, config);
+
+      if (this.renderCustomBlot) {
+        converter.renderCustomWith((op, contextOp) => {
+          return this.renderCustomBlot(op, contextOp);
+        });
+      }
+
+      const rendered = converter.convert();
+
+      if (this.format === 'html') {
+        this.el.nativeElement.innerHTML = rendered;
+
+      } else if (this.format === 'text') {
+        const div = document.createElement('div');
+        div.innerHTML = rendered;
+        this.el.nativeElement.innerHTML = div.textContent || div.innerText || '';
+      }
+    }
   }
 }

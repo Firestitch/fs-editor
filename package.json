@@ -2,7 +2,7 @@
   "name": "@firestitch/editor",
   "title": "Rich Text Editor",
   "description": "@firestitch/editor",
-  "version": "8.2.10",
+  "version": "8.2.13",
   "repository": {
     "type": "git",
     "url": "https://github.com/Firestitch/ngx-editor"
@@ -78,7 +78,8 @@
     "typescript": "^3.5.3",
     "webpack": "^4.41.4",
     "webpack-dev-server": "^3.10.1",
-    "zone.js": "^0.10.2"
+    "zone.js": "^0.10.2",
+    "quill-mention": "^2.2.5"
   },
   "engines": {
     "node": ">=6.0.0"

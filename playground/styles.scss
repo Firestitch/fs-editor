@@ -2,6 +2,14 @@
 @import "../src/app/styles.scss";
 @import "~@firestitch/form/styles.scss";
 @import "~@firestitch/message/styles.scss";
+@import "~quill-mention/dist/quill.mention.css";
+
+.ql-mention-list-item {
+  margin: 0 !important;
+  &:before {
+    content: "" !important;
+  }
+}
 
 @include fs-editor($mat-blue);
 

@@ -65,40 +65,30 @@ export class FsEditorRichTextService implements OnDestroy {
     this._initIcons();
     this._initImage();
 
-    const modules = {
-      toolbar: this._editorOptions.modules.toolbar,
+    const modules = this._editorOptions.modules;
 
-      keyboard: {
-        bindings: {
-            // Used for capture shift + tab to prevent scrolling to top
-            shiftTab: {
-              key: 'tab',
-              shiftKey: true,
-              handler: (range, context) => {
-                return false;
-              }
-            }
+    if (!modules.keyboard) {
+      modules.keyboard = {};
+    }
 
-          // enter: {
-          //   key: 13,
-          //   shiftKey: true,
-          //   handler: (range, context) => {
+    if (!modules.keyboard.bindings) {
+      modules.keyboard.bindings = {};
+    }
 
-          //     const currentLeaf = this.quill.getLeaf(range.index)[0];
-          //     const nextLeaf = this.quill.getLeaf(range.index + 1)[0];
-          //     this.quill.insertEmbed(range.index, 'break', true, Quill.sources.USER);
-          //     // Insert a second break if:
-          //     // At the end of the editor, OR next leaf has a different parent (<p>)
-          //     if (nextLeaf === null || currentLeaf.parent !== nextLeaf.parent) {
-          //       this.quill.insertEmbed(range.index, 'break', true, Quill.sources.USER);
-          //     }
-          //     // Now that we've inserted a line break, move the cursor forward
-          //     this.quill.setSelection(range.index + 1, Quill.sources.SILENT);
-          //   }
-          // }
-        }
+    // Used for capture shift + tab to prevent scrolling to top
+    modules.keyboard.bindings.shiftTab = {
+      key: 'tab',
+      shiftKey: true,
+      handler: (range, context) => {
+        return false;
       }
     };
+
+    Object.keys(modules).forEach(name => {
+      if (modules[name].register) {
+        Quill.register(`modules/${name}`, modules[name].register);
+      }
+    });
 
     this._editorOptions.modules = modules;
 
