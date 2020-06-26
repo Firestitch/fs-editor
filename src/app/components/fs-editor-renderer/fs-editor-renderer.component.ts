@@ -20,6 +20,7 @@ import { QuillDeltaToHtmlConverter, DeltaInsertOp } from 'quill-delta-to-html';
 export class FsEditorRendererComponent implements OnInit, OnChanges {
 
   @HostBinding('class.fs-editor-default') classEditorReset = true;
+  @HostBinding('class.fs-editor-renderer') classEditorRenderer = true;
 
   @Input() format: 'html' | 'text' = 'html';
   @Input() renderCustomBlot: (customOp: DeltaInsertOp, contextOp: DeltaInsertOp) => string;
