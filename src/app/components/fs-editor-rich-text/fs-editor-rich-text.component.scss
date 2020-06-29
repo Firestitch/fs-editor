@@ -1,5 +1,4 @@
 :host {
-  z-index: 100;
 
   ::ng-deep {
     .ql-snow .ql-editor blockquote {
@@ -19,10 +18,7 @@
 }
 
 .click-panel {
-
   position: relative;
-  margin: -1px 0 0 -1px;
-
 
   &:not(.has-content) {
     cursor: pointer;
@@ -47,23 +43,12 @@
   }
 
   .click-panel-container {
-
     .placeholder {
       color: rgba(0,0,0,.54);
     }
   }
 
   &:hover {
-
-    &:after {
-      content: '';
-      display: block;
-      position: absolute;
-      top: -4px;
-      bottom: -4px;
-      left: -4px;
-      right: -4px;
-    }
 
     .edit {
       .edit-placeholder {
