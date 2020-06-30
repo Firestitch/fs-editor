@@ -1,5 +1,5 @@
 export const DEFAULT_TOOLBAR_CONFIG = [
-  [{ header: [1, 2, 3, 4, 5, false] }],
+  [{ header: [1, 2, 3, 4, false] }],
   [
     'bold',
     'italic',

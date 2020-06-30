@@ -55,10 +55,17 @@ export class FsEditorRendererComponent implements OnInit, OnChanges {
               return '';
             }
           }
-        }
+        },
+        customTagAttributes: (op) => {
+          if (op.attributes['code-block']) {
+            return {
+              class: ['ql-syntax'],
+            };
+          }
+        },
       }
 
-      const converter = new QuillDeltaToHtmlConverter(this.content || {}, config);
+      const converter = new QuillDeltaToHtmlConverter(this.content || {}, config as any);
 
       if (this.renderCustomBlot) {
         converter.renderCustomWith((op, contextOp) => {
