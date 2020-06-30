@@ -1,14 +1,18 @@
 import { ElementRef, Inject, Injectable, OnDestroy } from '@angular/core';
+
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { cloneDeep, remove } from 'lodash-es';
+import { Quill as quill } from 'quill';
+
+import { FsPrompt } from '@firestitch/prompt';
+
 import { FsEditorRichTextOptions } from '../interfaces/fs-editor-rich-text.interface';
 import { FS_EDITOR_RICH_TEXT_CONFIG } from '../fs-editor-rich-text.providers';
 import { ClipboardPaste } from '../classes/clipboard-paste';
 import { DEFAULT_TOOLBAR_CONFIG } from '../consts/default-toolbar-config';
-import { FsPrompt } from '@firestitch/prompt';
-import { Quill as quill } from 'quill';
 import Video from '../formats/video.format';
+import { getScrollParent } from '../helpers/get-scroll-parent';
 
 declare var require: any;
 var Quill: any = undefined;
@@ -55,7 +59,7 @@ export class FsEditorRichTextService implements OnDestroy {
     this._targetElement = el;
     // For correct position tooltip and other popup elements from editor
     this._editorOptions.bounds = this._targetElement.nativeElement;
-    this._editorOptions.scrollingContainer = this._targetElement.nativeElement;
+    // this._editorOptions.scrollingContainer = this._targetElement.nativeElement;
   }
 
   public initEditor() {
@@ -104,6 +108,7 @@ export class FsEditorRichTextService implements OnDestroy {
     this._initVideo();
     this._initClipboard();
     this._initBottomLine();
+    this._updateScrollContainer();
 
     this.initialized = true;
   }
@@ -275,5 +280,10 @@ export class FsEditorRichTextService implements OnDestroy {
     });
   }
 
-
+  // fix for scroll jumps when toolbar option clicked (in scope of S-T1086)
+  private _updateScrollContainer() {
+    setTimeout(() => {
+      (this.quill as any).scrollingContainer = getScrollParent(this._targetElement.nativeElement);
+    });
+  }
 }
