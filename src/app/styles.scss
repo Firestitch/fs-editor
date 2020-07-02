@@ -62,6 +62,7 @@
           display: block;
           line-height: normal;
           padding-bottom: 8px;
+          margin: 10px 0;
 
           &:last-child {
             padding: 0;
@@ -73,26 +74,6 @@
 
           &::after {
             content: "Normal";
-          }
-
-          &[data-value="1"] {
-            font-size: 150%;
-          }
-
-          &[data-value="2"] {
-            font-size: 140%;
-          }
-
-          &[data-value="3"] {
-            font-size: 130%;
-          }
-
-          &[data-value="4"] {
-            font-size: 120%;
-          }
-
-          &[data-value="5"] {
-            font-size: 110%;
           }
         }
       }
@@ -280,27 +261,19 @@
   }
 
   h1 {
-    font-size: 165%;
     margin: 15px 0;
-    border-bottom: 1px solid #a1a1a1;
-    padding-bottom: 5px;
   }
 
   h2 {
-    font-size: 150%;
     margin: 10px 0;
   }
 
   h3 {
-    font-size: 135%;
     margin: 5px 0;
-    color: #555;
   }
 
   h4 {
-    font-size: 120%;
     margin: 5px 0;
-    color: #555;
   }
 
   blockquote {
@@ -331,6 +304,34 @@
     }
   }
 }
+
+.fs-editor-default,
+.editor-container {
+  h1,
+  .ql-formats .ql-picker.ql-header .ql-picker-item[data-value="1"] {
+    font-size: 165%;
+    border-bottom: 1px solid #a1a1a1;
+    padding-bottom: 5px;
+  }
+
+  h2,
+  .ql-formats .ql-picker.ql-header .ql-picker-item[data-value="2"] {
+    font-size: 150%;
+  }
+
+  h3,
+  .ql-formats .ql-picker.ql-header .ql-picker-item[data-value="3"] {
+    font-size: 135%;
+    color: #555;
+  }
+
+  h4,
+  .ql-formats .ql-picker.ql-header .ql-picker-item[data-value="4"] {
+    font-size: 120%;
+    color: #555;
+  }
+}
+
 
 .fs-editor-renderer {
   ol, ul {
