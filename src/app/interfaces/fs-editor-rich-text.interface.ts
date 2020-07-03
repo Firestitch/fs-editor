@@ -1,5 +1,7 @@
 import { QuillOptionsStatic } from 'quill';
+
 import { Observable } from 'rxjs';
+
 import { DeltaInsertOp } from 'quill-delta-to-html';
 
 
@@ -14,6 +16,7 @@ export interface FsEditorRichTextOptions extends QuillOptionsStatic {
   placeholder?: string;
   maxLength?: number;
   keyboard?: any;
+  handlers?: any;
   autofocus?: boolean;
   renderCustomBlot?: (customOp: DeltaInsertOp, contextOp: DeltaInsertOp) => string;
 }

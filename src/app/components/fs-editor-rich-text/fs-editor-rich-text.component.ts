@@ -10,6 +10,7 @@ import {
   ViewChild,
   OnInit,
   ChangeDetectorRef,
+  ElementRef,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -61,7 +62,7 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
   @Output() public destroyed = new EventEmitter();
 
   @ViewChild('editor', { static: false })
-  public container;
+  public container: ElementRef;
 
   @HostBinding('class.focused') classFocused = false;
 
@@ -95,7 +96,6 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
     if (!this.options.initOnClick) {
       this.initialize();
     }
-
   }
 
   public validate(control: AbstractControl): ValidationErrors | null {

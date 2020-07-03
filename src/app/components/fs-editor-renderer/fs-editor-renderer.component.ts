@@ -67,11 +67,16 @@ export class FsEditorRendererComponent implements OnInit, OnChanges {
 
       const converter = new QuillDeltaToHtmlConverter(this.content || {}, config as any);
 
-      if (this.renderCustomBlot) {
-        converter.renderCustomWith((op, contextOp) => {
+      converter.renderCustomWith((op: DeltaInsertOp, contextOp: DeltaInsertOp) => {
+
+        if (op.insert.type === 'divider') {
+          return '<hr/>';
+        }
+
+        if (this.renderCustomBlot) {
           return this.renderCustomBlot(op, contextOp);
-        });
-      }
+        }
+      });
 
       const rendered = converter.convert();
 

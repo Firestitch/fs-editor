@@ -11,7 +11,8 @@ import { FsEditorRichTextOptions } from '../interfaces/fs-editor-rich-text.inter
 import { FS_EDITOR_RICH_TEXT_CONFIG } from '../fs-editor-rich-text.providers';
 import { ClipboardPaste } from '../classes/clipboard-paste';
 import { DEFAULT_TOOLBAR_CONFIG } from '../consts/default-toolbar-config';
-import Video from '../formats/video.format';
+import VideoBlot from '../blots/video.blot'
+import DividerBlot from '../blots/divider.blot';
 import { getScrollParent } from '../helpers/get-scroll-parent';
 
 declare var require: any;
@@ -42,13 +43,11 @@ export class FsEditorRichTextService implements OnDestroy {
       this._editorOptions.modules = {};
     }
 
-    if (!this._editorOptions.modules.toolbar) {
-      this._editorOptions.modules.toolbar = DEFAULT_TOOLBAR_CONFIG;
-    }
-
-    if (!this._editorOptions.modules.toolbar.handlers) {
-      this._editorOptions.modules.toolbar.handlers = {};
-    }
+    this._editorOptions.modules.toolbar = {
+      container: DEFAULT_TOOLBAR_CONFIG,
+      handlers: {},
+      ...this._editorOptions.modules.toolbar
+    };
 
     if (!this._editorOptions.theme) {
       this._editorOptions.theme = 'snow';
@@ -57,14 +56,10 @@ export class FsEditorRichTextService implements OnDestroy {
 
   public setTargetElement(el: ElementRef) {
     this._targetElement = el;
-    // For correct position tooltip and other popup elements from editor
     this._editorOptions.bounds = this._targetElement.nativeElement;
-    // this._editorOptions.scrollingContainer = this._targetElement.nativeElement;
   }
 
   public initEditor() {
-
-    //Quill.register(SmartBreak);
 
     this._initIcons();
     this._initImage();
@@ -96,10 +91,12 @@ export class FsEditorRichTextService implements OnDestroy {
 
     this._editorOptions.modules = modules;
 
-    this.quill = new Quill(this._targetElement.nativeElement, this._editorOptions);
+    this._initDivider();
+
+    this.quill = new Quill(this.element, this._editorOptions);
 
     if (this._editorOptions.image && this._editorOptions.image.upload) {
-      this.quill.getModule('toolbar').addHandler('image', () => {
+      this._addToolbarHandler('image', () => {
         this._selectImage();
       });
     }
@@ -111,6 +108,10 @@ export class FsEditorRichTextService implements OnDestroy {
     this._updateScrollContainer();
 
     this.initialized = true;
+  }
+
+  public get element() {
+    return this._targetElement.nativeElement;
   }
 
   public destroy() {
@@ -199,7 +200,7 @@ export class FsEditorRichTextService implements OnDestroy {
     icons['image'] = '<i class="material-icons">insert_photo</i>';
     icons['blockquote'] = '<i class="material-icons">format_quote</i>';
     icons['code-block'] = '<i class="material-icons">code</i>';
-    icons['blockquote'] = '<i class="material-icons">format_quote</i>';
+    icons['divider'] = '<i class="material-icons">remove</i>';
   }
 
   private _initImage() {
@@ -223,7 +224,7 @@ export class FsEditorRichTextService implements OnDestroy {
   }
 
   private _initLink() {
-    this.quill.getModule('toolbar').addHandler('link', (value) => {
+    this._addToolbarHandler('link', (value) => {
 
       const selection = this.quill.getSelection();
 
@@ -255,12 +256,27 @@ export class FsEditorRichTextService implements OnDestroy {
     });
   }
 
+  private _addToolbarHandler(name, func) {
+    this.quill.getModule('toolbar')
+      .addHandler(name, func);
+  }
+
+  private _initDivider() {
+    Quill.register(DividerBlot);
+
+    this._editorOptions.modules.toolbar.handlers = {
+      divider: () => {
+        const index = this.quill.getSelection().index || 0;
+        this.quill.insertEmbed(index, 'divider', '', Quill.sources.USER);
+        this.quill.setSelection(index + 2, 0, Quill.sources.SILENT);
+      }
+    }
+  }
+
   private _initVideo() {
+    Quill.register(VideoBlot);
 
-    Quill.register(Video);
-
-    this.quill.getModule('toolbar').addHandler('video', (value) => {
-
+    this._addToolbarHandler('video', () => {
       this._prompt.input({
         label: 'YouTube URL',
         title: 'Insert Video',
@@ -274,7 +290,7 @@ export class FsEditorRichTextService implements OnDestroy {
 
         if (url) {
           const index = this.quill.getSelection().index || 0;
-          this.quill.insertEmbed(index, 'video', url, 'user')
+          this.quill.insertEmbed(index, 'video', url, 'user');
         }
       });
     });

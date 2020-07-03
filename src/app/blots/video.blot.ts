@@ -7,7 +7,7 @@ const Link = Quill.import('formats/link');
 
 const ATTRIBUTES = ['height', 'width'];
 
-class Video extends BlockEmbed {
+class VideoBlot extends BlockEmbed {
   static create(value) {
     const node = super.create(value);
 
@@ -69,8 +69,8 @@ class Video extends BlockEmbed {
   }
 }
 
-Video.blotName = 'video';
-Video.className = 'ql-video';
-Video.tagName = 'IFRAME';
+VideoBlot.blotName = 'video';
+VideoBlot.className = 'ql-video';
+VideoBlot.tagName = 'IFRAME';
 
-export default Video;
+export default VideoBlot;

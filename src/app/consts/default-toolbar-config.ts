@@ -20,6 +20,7 @@ export const DEFAULT_TOOLBAR_CONFIG = [
     { align: [] },
     'blockquote',
     'code-block',
+    'divider',
   ],
   [
     'image',

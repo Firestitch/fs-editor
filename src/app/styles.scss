@@ -252,9 +252,7 @@
   h1,
   h2,
   h3,
-  h4,
-  h5,
-  h6 {
+  h4 {
     margin: 10px 0;
     padding: 0;
     line-height: normal;
@@ -274,6 +272,12 @@
 
   h4 {
     margin: 5px 0;
+  }
+
+  hr {
+    border: none;
+    height: 1px;
+    background-color: #d5d5d5;
   }
 
   blockquote {
@@ -307,31 +311,35 @@
 
 .fs-editor-default,
 .editor-container {
+
   h1,
   .ql-formats .ql-picker.ql-header .ql-picker-item[data-value="1"] {
     font-size: 165%;
     border-bottom: 1px solid #a1a1a1;
     padding-bottom: 5px;
+    font-weight: bold;
   }
 
   h2,
   .ql-formats .ql-picker.ql-header .ql-picker-item[data-value="2"] {
     font-size: 150%;
+    font-weight: bold;
   }
 
   h3,
   .ql-formats .ql-picker.ql-header .ql-picker-item[data-value="3"] {
     font-size: 135%;
     color: #555;
+    font-weight: bold;
   }
 
   h4,
   .ql-formats .ql-picker.ql-header .ql-picker-item[data-value="4"] {
     font-size: 120%;
     color: #555;
+    font-weight: bold;
   }
 }
-
 
 .fs-editor-renderer {
   ol, ul {
