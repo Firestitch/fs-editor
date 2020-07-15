@@ -27,10 +27,7 @@ import { isArray } from 'lodash-es';
 
 import { FsEditorRichTextOptions } from '../../interfaces/fs-editor-rich-text.interface';
 import { FsEditorRichTextService } from '../../services/fs-editor-rich-text.service';
-import { Quill as quill } from 'quill';
 
-declare var require: any;
-var Quill: any;
 
 @Component({
   selector: 'fs-editor-rich-text',

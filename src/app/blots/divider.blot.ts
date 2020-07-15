@@ -1,11 +1,9 @@
+import Quill from 'quill';
 
-var Quill: any = undefined;
-declare var require: any;
-Quill = require('quill');
+const BlockEmbed = (Quill as any).imports['blots/block/embed'];
 
-const BlockEmbed = Quill.import('blots/block/embed');
 class DividerBlot extends BlockEmbed { }
-DividerBlot.blotName = 'divider';
-DividerBlot.tagName = 'hr';
+(DividerBlot as any).blotName = 'divider';
+(DividerBlot as any).tagName = 'hr';
 
 export default DividerBlot;

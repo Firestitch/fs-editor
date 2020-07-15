@@ -1,9 +1,7 @@
-var Quill: any = undefined;
-declare var require: any;
-Quill = require('quill');
+import Quill from 'quill';
 
-const BlockEmbed = Quill.import('blots/block/embed');
-const Link = Quill.import('formats/link');
+const BlockEmbed = (Quill as any).imports['blots/block/embed'];
+const Link = (Quill as any).imports['formats/link'];
 
 const ATTRIBUTES = ['height', 'width'];
 
@@ -54,9 +52,9 @@ class VideoBlot extends BlockEmbed {
   format(name, value) {
     if (ATTRIBUTES.indexOf(name) > -1) {
       if (value) {
-        this.domNode.setAttribute(name, value);
+        (this as any).domNode.setAttribute(name, value);
       } else {
-        this.domNode.removeAttribute(name);
+        (this as any).domNode.removeAttribute(name);
       }
     } else {
       super.format(name, value);
@@ -64,13 +62,13 @@ class VideoBlot extends BlockEmbed {
   }
 
   html() {
-    const { video } = this.value();
+    const { video } = (this as any).value();
     return `<a href="${video}">${video}</a>`;
   }
 }
 
-VideoBlot.blotName = 'video';
-VideoBlot.className = 'ql-video';
-VideoBlot.tagName = 'IFRAME';
+(VideoBlot as any).blotName = 'video';
+(VideoBlot as any).className = 'ql-video';
+(VideoBlot as any).tagName = 'IFRAME';
 
 export default VideoBlot;

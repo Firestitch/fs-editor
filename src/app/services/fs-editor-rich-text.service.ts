@@ -3,7 +3,6 @@ import { ElementRef, Inject, Injectable, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { cloneDeep, remove } from 'lodash-es';
-import { Quill as quill } from 'quill';
 
 import { FsPrompt } from '@firestitch/prompt';
 
@@ -15,14 +14,13 @@ import VideoBlot from '../blots/video.blot'
 import DividerBlot from '../blots/divider.blot';
 import { getScrollParent } from '../helpers/get-scroll-parent';
 
-declare var require: any;
-var Quill: any = undefined;
-Quill = require('quill');
+import Quill from 'quill';
+
 
 @Injectable()
 export class FsEditorRichTextService implements OnDestroy {
 
-  public quill: quill;
+  public quill: Quill;
   public initialized = false;
 
   private _editorOptions: FsEditorRichTextOptions;
@@ -179,7 +177,7 @@ export class FsEditorRichTextService implements OnDestroy {
   }
 
   private _initIcons() {
-    const icons = Quill.import('ui/icons');
+    const icons = (Quill as any).imports['ui/icons'];
 
     icons['bold'] = '<i class="material-icons">format_bold</i>';
     icons['italic'] = '<i class="material-icons">format_italic</i>';
@@ -267,8 +265,8 @@ export class FsEditorRichTextService implements OnDestroy {
     this._editorOptions.modules.toolbar.handlers = {
       divider: () => {
         const index = this.quill.getSelection().index || 0;
-        this.quill.insertEmbed(index, 'divider', '', Quill.sources.USER);
-        this.quill.setSelection(index + 2, 0, Quill.sources.SILENT);
+        this.quill.insertEmbed(index, 'divider', '', (Quill as any).sources.USER);
+        this.quill.setSelection(index + 2, 0, (Quill as any).sources.SILENT);
       }
     }
   }
