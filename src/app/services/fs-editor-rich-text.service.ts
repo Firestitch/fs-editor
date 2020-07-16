@@ -7,7 +7,7 @@ import { cloneDeep, remove } from 'lodash-es';
 import { FsPrompt } from '@firestitch/prompt';
 
 import { FsEditorRichTextOptions } from '../interfaces/fs-editor-rich-text.interface';
-import { FS_EDITOR_RICH_TEXT_CONFIG } from '../fs-editor-rich-text.providers';
+import { FS_EDITOR_RICH_TEXT_CONFIG, FS_EDITOR_DEBUG_LEVEL } from '../fs-editor-rich-text.providers';
 import { ClipboardPaste } from '../classes/clipboard-paste';
 import { DEFAULT_TOOLBAR_CONFIG } from '../consts/default-toolbar-config';
 import VideoBlot from '../blots/video.blot'
@@ -29,7 +29,9 @@ export class FsEditorRichTextService implements OnDestroy {
   private _destroy$ = new Subject<void>();
 
   constructor(@Inject(FS_EDITOR_RICH_TEXT_CONFIG) private _defaultEditorOptions,
+              @Inject(FS_EDITOR_DEBUG_LEVEL) private _debugLevel,
               private _prompt: FsPrompt) {
+    Quill.debug(this._debugLevel);
     this._editorOptions = cloneDeep(this._defaultEditorOptions);
   }
 
