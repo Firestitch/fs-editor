@@ -209,7 +209,7 @@ export class FsEditorRichTextService implements OnDestroy {
       return;
     }
 
-    this._editorOptions.modules.toolbar = this._editorOptions.modules.toolbar.filter(item => {
+    this._editorOptions.modules.toolbar = this._editorOptions.modules.toolbar.container.filter(item => {
       if (item !== 'image') {
 
         remove(item, (i) => {
