@@ -125,7 +125,7 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
     setTimeout(() => {
       this._richTextService.setTargetElement(this.container);
       this._richTextService.initEditor();
-      this._richTextService.quill.setContents(this.ngModel);
+      this.setContents(this.ngModel);
       this.subscribe();
       this.initialized.emit();
       if (this.options.autofocus) {
@@ -151,8 +151,18 @@ export class FsEditorRichTextComponent implements OnInit, ControlValueAccessor, 
 
   public writeValue(data: any): void {
     if (this._richTextService.quill) {
+      try {
+        this.setContents(data);
+        this._cdRef.markForCheck();
+      } catch { }
+    }
+  }
+
+  public setContents(data: any) {
+    try {
       this._richTextService.quill.setContents(data, 'api');
-      this._cdRef.markForCheck();
+    } catch {
+      this._richTextService.quill.setContents([] as any, 'api');
     }
   }
 
